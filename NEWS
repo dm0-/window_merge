@@ -1,0 +1,34 @@
+This file outlines broad user interface changes.  For a list of more specific
+code modifications, see the ChangeLog file.  For newly discovered problems with
+the software, see the BUGS file.
+
+
+* Initial Distribution of Window Merge 0.1
+
+** Plugin preferences
+
+*** A preference frame interface is provided for choosing on which side of the
+    Buddy List window to attach conversations.
+
+*** The height and width (depending on orientation from the above preference)
+    of the Buddy List pane are stored as preferences when changed by the user.
+
+*** A new conversation placement preference option is added, allowing all new
+    conversations to be attached to the default Buddy List window.
+
+** Buddy List window
+
+*** The notebook in main_vbox is replaced by resizable panes containing the
+    Buddy List notebook and a conversation window notebook.
+
+*** An instructions page is displayed in the Buddy List window's conversation
+    notebook when no conversations are open.  The tab can be used as a normal
+    conversation's infopane; i.e., conversations from other windows can be
+    dragged onto it to attach them to the window.
+
+*** The Buddy List window title will be set to the name of the active
+    conversation in its notebook, as is done with conversation windows.
+
+*** Items from a conversation window menu bar are appended to the Buddy List
+    menu bar.  Their visibility is determined by the presence of active
+    conversations in the Buddy List window's conversation notebook.

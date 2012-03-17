@@ -1,0 +1,77 @@
+The Window Merge plugin for Pidgin is briefly documented in this file.  You can
+search for the following strings to jump to the corresponding section pages.
+
+PLUGIN OVERVIEW
+DOCUMENTATION / PROJECT HISTORY
+SIMPLE BUILD INSTRUCTIONS
+
+This plugin is named "Window Merge", with a project name "window_merge".  Even
+though package names such as "pidgin-window_merge" may be used, this plugin was
+not written and is not maintained by Pidgin developers.  The plugin should be
+considered unsupported and unstable for the time being.
+
+This file was last revised for distribution with version 0.1.
+
+
+PLUGIN OVERVIEW
+
+A Pidgin conversation window is merged into the Buddy List window.  Both the
+conversation notebook and Buddy List notebook are presented in resizable panes.
+Items from the conversation window menu bar are also migrated to the Buddy List
+menu bar, but are only visible when conversations are open in the Buddy List.
+
+Users can customize where the conversations are attached relative to the Buddy
+List in the plugin's preferences frame.  The position of the panes' slider is
+also saved as a user preference.  In addition, an option is added to the
+conversation placement preference that allows new conversations to be opened in
+the Buddy List by default.
+
+Please note that this plugin works by altering internal Pidgin data structures
+in ways that were not intended by the Pidgin developers, and at this point, it
+has received extremely limited testing.  For these reasons, this plugin should
+not be enabled in situations where receiving instant messages is critical.
+
+
+DOCUMENTATION / PROJECT HISTORY
+
+The following is the list of documentation files with their specific content:
+
+  AUTHORS
+      A list of copyright holders in the project and their contributions
+  BUGS
+      A list of known problems with the current plugin distribution
+  ChangeLog
+      A list of code changes in specific files and functions
+  COPYING
+      A copy of the license that covers this software
+  INSTALL
+      A copy of the generic installation instructions for GNU software
+  NEWS
+      A list of user-visible changes to the plugin
+  README
+      A document of general information about the project
+  TODO
+      A list of planned or potential changes for future versions
+
+A sample doxygen configuration file "Doxyfile" is provided to produce an HTML-
+formatted code overview.  It can be customized to preference, or used as is by
+simply running the command "doxygen" in the source directory.
+
+
+SIMPLE BUILD INSTRUCTIONS
+
+If the Pidgin development files are properly installed (prebuilt packages are
+probably named "pidgin-devel" or "pidgin-dev"), only two commands should be
+necessary to build the plugin (run from this file's source directory):
+
+    ./configure
+    make
+
+You can specify the libdir variable and run "make install" if desired, but the
+plugin consists of only one file.  It should have been built at the location
+".libs/window_merge.so", and you will probably want to copy it to your user-
+specific plugin directory "~/.purple/plugins/".  On a modern GNU/Linux system:
+
+    install -Dpm 755 .libs/window_merge.so ~/.purple/plugins/window_merge.so
+
+More detailed build information can be found in the INSTALL file.

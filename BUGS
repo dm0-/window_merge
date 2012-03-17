@@ -1,0 +1,50 @@
+To report bugs that you have found, your best bet is to submit the relevant
+information through the site from which you downloaded this package (e.g.,
+open a Git Hub issue).  You can also directly e-mail the address that is dotted
+around the project's copyright statements, <fedora.dm0@gmail.com>.  Please read
+the following issues before reporting to ensure your bug is not already known.
+
+The issues outlined below are all the problems I have encountered in my own
+extremely limited testing of this plugin.  This file also serves as a to-do
+list for myself with some methods to consider for fixing the problems.
+
+For a listing of theoretical issues that other GTK plugins could experience due
+to this plugin, grep the C files for "FRAGILE".  These comments identify points
+where some assumptions were made about the GTK widget structure.  For example,
+the Buddy List menu bar has no explicit pointer in the structure, so it is
+assumed to be the first child element of main_vbox, but another plugin could
+have changed its location.
+
+This file was last revised for distribution with version 0.1.
+
+
+The following is the list of known issues with the plugin, sorted approximately
+from most troublesome to least.
+
+* There are a few ways to cause Pidgin to segfault from messing with the dummy
+  conversation's tab (dragging it into itself, etc.).  This is mostly because
+  the conversation UI doesn't have an active_conv.
+
+  - Ideally, get the PIDGIN_CONVERSATION(PurpleConversation) macro to return
+    NULL when given NULL in the mainline Pidgin code, and add any other
+    necessary sanity checks in their gtkconv.c callback functions.
+
+  - Trying to fake the active_conv would cause all sorts of other troubles that
+    are circumvented by setting it to NULL.  Still, it's on the radar.
+
+  - Intercepting GTK events attempting to modify the dummy page is a possible
+    solution, but it will require a slew of callbacks to cancel user actions.
+
+  I imagine most users will have the tab positions at the top which will hide
+  them automatically when there is only one conversation, avoiding this issue.
+
+* Accelerators for menu items from the conversation window don't work when they
+  are moved into the Buddy List window.  (The mnemonic letters still work for
+  traversing those menu items using the keyboard.)
+
+  - Some of the accelerators conflict with those in the Buddy List menu anyway,
+    and I haven't decided how best to handle them yet.
+
+* The buddy icon in the Buddy List seems to calculate its position using the
+  width of the notebook and the position of the window.  This causes it to be
+  drawn in odd locations when using the "left" position preference.
