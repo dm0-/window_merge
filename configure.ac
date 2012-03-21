@@ -30,6 +30,7 @@ AC_DEFINE([PACKAGE_AUTHOR_UID],["dm0"],
 AC_DEFINE([PACKAGE_AUTHOR_STRING],["David Michael <fedora.dm0@gmail.com>"],
     [Define to the full name and e-mail of the author.])
 
-PKG_CHECK_MODULES([pidgin],[pidgin],,[AC_MSG_ERROR([[cannot find pidgin]])])
+PKG_CHECK_MODULES([pidgin],[pidgin],,
+    [AC_MSG_WARN([[relying on environment pidgin_CFLAGS and pidgin_LIBS]])])
 
 AC_OUTPUT
