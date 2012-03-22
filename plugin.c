@@ -115,9 +115,10 @@ deleting_conversation_cb(PurpleConversation *conv)
   if ( gtkblist == NULL )
     return;
 
-  /* If the last conv is being deleted, add help and reset the title/menu. */
+  /* If the last conv is being deleted, reset help, icons, title, and menu. */
   if ( pidgin_conv_window_get_gtkconv_count(gtkconvwin) <= 1 ) {
     pwm_show_dummy_conversation(gtkblist);
+    gtk_window_set_icon_list(GTK_WINDOW(gtkblist->window), NULL);
     gtk_window_set_title(GTK_WINDOW(gtkblist->window),
                          pwm_fetch(gtkblist, "pwm_title"));
     pwm_set_conv_menus_visible(gtkblist, FALSE);

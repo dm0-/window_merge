@@ -207,7 +207,8 @@ pwm_destroy_conversation(PidginBuddyList *gtkblist)
                             TRUE, TRUE, 0, GTK_PACK_START);
   pwm_destroy(gtkblist, "pwm_paned");
 
-  /* Restore the window title from before conversations changed it. */
+  /* Restore the window title and icons from before conversations set them. */
+  gtk_window_set_icon_list(GTK_WINDOW(gtkblist->window), NULL);
   gtk_window_set_title(GTK_WINDOW(gtkblist->window),
                        pwm_fetch(gtkblist, "pwm_title"));
   pwm_free(gtkblist, "pwm_title");
