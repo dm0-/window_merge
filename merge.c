@@ -25,8 +25,11 @@
 
 #include <gtkblist.h>
 #include <gtkconv.h>
+#include <gtkimhtml.h>
 
 #include <prefs.h>
+
+#include <gdk/gdkkeysyms.h>
 
 #include "window_merge.h"
 
@@ -124,6 +127,7 @@ void
 pwm_merge_conversation(PidginBuddyList *gtkblist)
 {
   PidginWindow *gtkconvwin;     /*< The mutilated conversations for gtkblist */
+  GtkBindingSet *binding_set;   /*< The binding set of GtkIMHtml widgets     */
   GtkWidget *blist_menu;        /*< The Buddy List menu bar                  */
   GList *items;                 /*< Stores widget children listing results   */
   GList *item;                  /*< A menu item from the conversation window */
@@ -132,6 +136,7 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
   if ( pwm_blist_get_convs(gtkblist) != NULL )
     return;
 
+  binding_set = gtk_binding_set_by_class(g_type_class_ref(GTK_TYPE_IMHTML));
   gtkconvwin = pidgin_conv_window_new();
 
   /* Tie the Buddy List and conversation window instances together. */
@@ -166,6 +171,16 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
   /* Clean up the remaining conversation window widget husk. */
   gtk_widget_destroy(gtkconvwin->window);
   gtkconvwin->window = gtkblist->window;
+
+  /* Block these "move-cursor" bindings for conversation event handlers. */
+  /* XXX: These are skipped in any GtkIMHtml, not just the conversations. */
+  /* XXX: Furthermore, there is no event to undo this effect. */
+  gtk_binding_entry_skip(binding_set, GDK_Up,           GDK_CONTROL_MASK);
+  gtk_binding_entry_skip(binding_set, GDK_Down,         GDK_CONTROL_MASK);
+  gtk_binding_entry_skip(binding_set, GDK_Page_Up,      GDK_CONTROL_MASK);
+  gtk_binding_entry_skip(binding_set, GDK_Page_Down,    GDK_CONTROL_MASK);
+  gtk_binding_entry_skip(binding_set, GDK_KP_Page_Up,   GDK_CONTROL_MASK);
+  gtk_binding_entry_skip(binding_set, GDK_KP_Page_Down, GDK_CONTROL_MASK);
 }
 
 
