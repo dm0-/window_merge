@@ -196,11 +196,22 @@ void
 pwm_destroy_conversation(PidginBuddyList *gtkblist)
 {
   PidginWindow *gtkconvwin;     /*< Conversation window merged into gtkblist */
+  GList *gtkconvs;              /*< List of conversations shown in gtkblist  */
+  GList *gtkconv;               /*< A conversation in the list (iteration)   */
   GList *items;                 /*< List of conversation window menu items   */
   GList *item;                  /*< A menu item in the list (iteration)      */
 
   gtkconvwin = pwm_blist_get_convs(gtkblist);
+  gtkconvs = g_list_copy(pidgin_conv_window_get_gtkconvs(gtkconvwin));
   items = pwm_fetch(gtkblist, "pwm_conv_menus");
+
+  /* Remove any conversations (except the dummy tab) from the Buddy List. */
+  pwm_show_dummy_conversation(gtkblist);
+  for ( gtkconv = gtkconvs; gtkconv != NULL; gtkconv = gtkconv->next )
+    if ( ((PidginConversation *)gtkconv->data)->active_conv != NULL )
+      pidgin_conv_window_remove_gtkconv(gtkconvwin, gtkconv->data);
+    else
+      gtkconvs = g_list_remove(gtkconvs, gtkconv->data);
 
   /* Destroy the Buddy List's special conversation window. */
   g_object_steal_data(G_OBJECT(gtkblist->notebook), "pwm_convs");
@@ -227,6 +238,11 @@ pwm_destroy_conversation(PidginBuddyList *gtkblist)
   gtk_window_set_title(GTK_WINDOW(gtkblist->window),
                        pwm_fetch(gtkblist, "pwm_title"));
   pwm_free(gtkblist, "pwm_title");
+
+  /* With the Buddy List reset, run its old conversations through placement. */
+  for ( gtkconv = gtkconvs; gtkconv != NULL; gtkconv = gtkconv->next )
+    pidgin_conv_placement_place(gtkconv->data);
+  g_list_free(gtkconvs);
 }
 
 
