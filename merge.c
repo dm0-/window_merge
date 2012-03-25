@@ -196,10 +196,11 @@ void
 pwm_destroy_conversation(PidginBuddyList *gtkblist)
 {
   PidginWindow *gtkconvwin;     /*< Conversation window merged into gtkblist */
-  GList *items;                 /*< Conversation window menu items           */
-  GList *item;                  /*< A menu item from a conversation menu bar */
+  GList *items;                 /*< List of conversation window menu items   */
+  GList *item;                  /*< A menu item in the list (iteration)      */
 
   gtkconvwin = pwm_blist_get_convs(gtkblist);
+  items = pwm_fetch(gtkblist, "pwm_conv_menus");
 
   /* Destroy the Buddy List's special conversation window. */
   g_object_steal_data(G_OBJECT(gtkblist->notebook), "pwm_convs");
@@ -210,7 +211,6 @@ pwm_destroy_conversation(PidginBuddyList *gtkblist)
   pwm_free_dummy_conversation(gtkblist);
 
   /* Free the list of conversation menu items. */
-  items = pwm_fetch(gtkblist, "pwm_conv_menus");
   for ( item = items; item != NULL; item = item->next )
     gtk_widget_destroy(GTK_WIDGET(item->data));
   g_list_free(items);
@@ -294,15 +294,16 @@ pwm_create_paned_layout(PidginBuddyList *gtkblist, const char *side)
 void
 pwm_set_conv_menus_visible(PidginBuddyList *gtkblist, gboolean visible)
 {
-  GList *item;                  /*< Menu items dealing with conversations    */
+  GList *items;                 /*< List of conversation window menu items   */
+  GList *item;                  /*< A menu item in the list (iteration)      */
 
-  item = pwm_fetch(gtkblist, "pwm_conv_menus");
+  items = pwm_fetch(gtkblist, "pwm_conv_menus");
 
   if ( visible )
-    for ( ; item != NULL; item = item->next )
+    for ( item = items; item != NULL; item = item->next )
       gtk_widget_show(GTK_WIDGET(item->data));
 
   else
-    for ( ; item != NULL; item = item->next )
+    for ( item = items; item != NULL; item = item->next )
       gtk_widget_hide(GTK_WIDGET(item->data));
 }
