@@ -19,7 +19,7 @@ AC_INIT([Window Merge],[0.1],
     [fedora.dm0@gmail.com],[window_merge],
     [https://github.com/dm0-/window_merge])
 AM_INIT_AUTOMAKE
-LT_INIT([disable-static])
+LT_INIT([disable-static win32-dll])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_HEADERS([config.h])
@@ -29,6 +29,11 @@ AC_DEFINE([PACKAGE_AUTHOR_UID],["dm0"],
     [Define to the short identifier of the author.])
 AC_DEFINE([PACKAGE_AUTHOR_STRING],["David Michael <fedora.dm0@gmail.com>"],
     [Define to the full name and e-mail of the author.])
+
+AS_CASE(["$host_os"],
+    [*mingw*],[LT_NO_UNDEFINED="-no-undefined"],
+    [LT_NO_UNDEFINED=])
+AC_SUBST(LT_NO_UNDEFINED)
 
 PKG_CHECK_MODULES([pidgin],[pidgin],,
     [AC_MSG_WARN([[relying on environment pidgin_CFLAGS and pidgin_LIBS]])])
