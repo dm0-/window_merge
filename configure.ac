@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # Window Merge.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([Window Merge],[0.1],
+AC_INIT([Window Merge],[0.2],
     [fedora.dm0@gmail.com],[window_merge],
     [https://github.com/dm0-/window_merge])
 AM_INIT_AUTOMAKE
