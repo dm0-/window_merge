@@ -2,15 +2,10 @@ This file outlines a few ideas to implement or areas with room for improvement
 in the plugin.  These items are not necessarily problems to be addressed; for
 those, see the BUGS file.
 
-This file was last revised for distribution with version 0.1.
+This file was last revised for distribution with version 0.2.
 
 
 In no particular order, the following are a few nice-to-have changes (maybe):
-
-* When disabling the plugin, the Buddy List's conversation window is simply
-  closed.  It may be worthwhile to open a separate window and move any existing
-  conversations from the Buddy List into it (or preferably run them through
-  conversation placement post-removal of the "window_merge" option).
 
 * The plugin theoretically supports multiple Buddy Lists (more or less), but
   Pidgin itself seems to be lacking in this regard.

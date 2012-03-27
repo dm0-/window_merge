@@ -15,7 +15,7 @@ the Buddy List menu bar has no explicit pointer in the structure, so it is
 assumed to be the first child element of main_vbox, but another plugin could
 have changed its location.
 
-This file was last revised for distribution with version 0.1.
+This file was last revised for distribution with version 0.2.
 
 
 The following is the list of known issues with the plugin, sorted approximately
@@ -38,12 +38,25 @@ from most troublesome to least.
   I imagine most users will have the tab positions at the top which will hide
   them automatically when there is only one conversation, avoiding this issue.
 
-* Accelerators for menu items from the conversation window don't work when they
-  are moved into the Buddy List window.  (The mnemonic letters still work for
-  traversing those menu items using the keyboard.)
+* Now that I've taken the time to attempt to run the plugin on Windows, there
+  seem to be issues related to disabling the plugin.  Widgets aren't redrawn
+  correctly, etc.  The issues seem to disappear if the plugin is re-enabled.  I
+  am not quite certain where to begin with these problems, as they do not exist
+  on GNU/Linux systems.
 
-  - Some of the accelerators conflict with those in the Buddy List menu anyway,
-    and I haven't decided how best to handle them yet.
+* Several cursor movement key bindings were disabled on HTML fields.  This was
+  done in order to enable tab switching and message retrieval, since the Buddy
+  List has an event handler that stops events which have a binding defined on a
+  focused HTML widget.
+
+  - An alternative to skipping bindings would be to completely remove the Buddy
+    List event handler, but that would cause other issues.  (Control+B for bold
+    text input would instead activate the "Add Buddy" dialogue, for example.)
+
+  - The related functions in Pidgin are all static, so I can't call them from a
+    wrapper function.  The code in question could be duplicated, but I am very
+    much against plugins duplicating any part of the main project's code.  It
+    seems the only feasible action is to file an issue in the Pidgin tracker.
 
 * The buddy icon in the Buddy List seems to calculate its position using the
   width of the notebook and the position of the window.  This causes it to be

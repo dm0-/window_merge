@@ -1,3 +1,25 @@
+2012-03-26  David Michael <fedora.dm0@gmail.com>
+
+	* : Updated project distribution, 0.2
+
+	* merge.c (pwm_merge_conversation): Add conversation menu accel_groups
+	(pwm_destroy_conversation): Remove the accel_groups when finished
+
+2012-03-24  David Michael <fedora.dm0@gmail.com>
+
+	* merge.c (pwm_destroy_conversation,pwm_set_conv_menus_visible):
+	Added or rearranged some variables for uniformity in the file
+	(pwm_destroy_conversation): Replace Buddy List conversations on disable
+
+2012-03-23  David Michael <fedora.dm0@gmail.com>
+
+	* merge.c (pwm_merge_conversation): Skip some "move-cursor" bindings
+
+2012-03-22  David Michael <fedora.dm0@gmail.com>
+
+	* merge.c (pwm_destroy_conversation): Unset window icons
+	* plugin.c (deleting_conversation_cb): Unset window icons
+
 2012-03-16  David Michael <fedora.dm0@gmail.com>
 
-	*: Initial project distribution
+	* : Initial project distribution, 0.1

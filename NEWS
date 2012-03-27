@@ -3,6 +3,21 @@ code modifications, see the ChangeLog file.  For newly discovered problems with
 the software, see the BUGS file.
 
 
+* Updated Distribution of Window Merge 0.2
+
+** Buddy List window
+
+*** The window icon list will be unset when conversations are cloesd or the
+    plugin is disabled.  This will cause the window to display the default icon
+    of the application, which is what the Buddy List normally displays.
+
+*** Several key events are now properly handled, including message retrieval
+    and conversation menu accelerators.
+
+*** When disabling the plugin, conversations open in the Buddy List window will
+    be run through conversation placement so they are not lost.
+
+
 * Initial Distribution of Window Merge 0.1
 
 ** Plugin preferences

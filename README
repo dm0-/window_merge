@@ -10,7 +10,7 @@ though package names such as "pidgin-window_merge" may be used, this plugin was
 not written and is not maintained by Pidgin developers.  The plugin should be
 considered unsupported and unstable for the time being.
 
-This file was last revised for distribution with version 0.1.
+This file was last revised for distribution with version 0.2.
 
 
 PLUGIN OVERVIEW
@@ -73,5 +73,10 @@ plugin consists of only one file.  It should have been built at the location
 specific plugin directory "~/.purple/plugins/".  On a modern GNU/Linux system:
 
     install -Dpm 755 .libs/window_merge.so ~/.purple/plugins/window_merge.so
+
+Note that if configure specified to compile the project with MinGW, the output
+file would be ".libs/window_merge.dll".  This file can be placed either in the
+"Application Data\.purple\plugins" or the "AppData\.purple\plugins" folder in
+your home directory, depending on your version of Microsoft Windows.
 
 More detailed build information can be found in the INSTALL file.
