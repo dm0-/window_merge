@@ -129,6 +129,7 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
   PidginWindow *gtkconvwin;     /*< The mutilated conversations for gtkblist */
   GtkBindingSet *binding_set;   /*< The binding set of GtkIMHtml widgets     */
   GtkWidget *blist_menu;        /*< The Buddy List menu bar                  */
+  GtkWidget *submenu;           /*< A submenu of a conversation menu item    */
   GList *items;                 /*< Stores widget children listing results   */
   GList *item;                  /*< A menu item from the conversation window */
 
@@ -159,8 +160,19 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
 
   /* Migrate conversation menu items into the Buddy List bar. */
   items = gtk_container_get_children(GTK_CONTAINER(gtkconvwin->menu.menubar));
-  for ( item = items; item != NULL; item = item->next )
+  for ( item = items; item != NULL; item = item->next ) {
     gtk_widget_reparent(GTK_WIDGET(item->data), blist_menu);
+
+    /* Register the submenus' accelerator groups with the Buddy List window. */
+    if ( GTK_IS_MENU_ITEM(item->data) ) {
+      submenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(item->data));
+      if ( GTK_IS_MENU(submenu) )
+        gtk_window_add_accel_group
+        (GTK_WINDOW(gtkblist->window),
+         gtk_menu_get_accel_group(GTK_MENU(submenu)));
+    }
+
+  }
   pwm_store(gtkblist, "pwm_conv_menus", items);
 
   /* Display instructions for users, and hide menu items for real convs. */
@@ -196,6 +208,7 @@ void
 pwm_destroy_conversation(PidginBuddyList *gtkblist)
 {
   PidginWindow *gtkconvwin;     /*< Conversation window merged into gtkblist */
+  GtkWidget *submenu;           /*< A submenu of a conversation menu item    */
   GList *gtkconvs;              /*< List of conversations shown in gtkblist  */
   GList *gtkconv;               /*< A conversation in the list (iteration)   */
   GList *items;                 /*< List of conversation window menu items   */
@@ -222,8 +235,19 @@ pwm_destroy_conversation(PidginBuddyList *gtkblist)
   pwm_free_dummy_conversation(gtkblist);
 
   /* Free the list of conversation menu items. */
-  for ( item = items; item != NULL; item = item->next )
+  for ( item = items; item != NULL; item = item->next ) {
+
+    /* Remove the submenus' accelerator groups from the Buddy List window. */
+    if ( GTK_IS_MENU_ITEM(item->data) ) {
+      submenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(item->data));
+      if ( GTK_IS_MENU(submenu) )
+        gtk_window_remove_accel_group
+        (GTK_WINDOW(gtkblist->window),
+         gtk_menu_get_accel_group(GTK_MENU(submenu)));
+    }
+
     gtk_widget_destroy(GTK_WIDGET(item->data));
+  }
   g_list_free(items);
   pwm_clear(gtkblist, "pwm_conv_menus");
 
