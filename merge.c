@@ -287,6 +287,7 @@ pwm_create_paned_layout(PidginBuddyList *gtkblist, const char *side)
 {
   PidginWindow *gtkconvwin;     /*< Conversation window merged into gtkblist */
   GtkWidget *paned;             /*< The new layout panes being created       */
+  GValue value = G_VALUE_INIT;  /*< For passing a property value to a widget */
 
   gtkconvwin = pwm_blist_get_convs(gtkblist);
 
@@ -322,6 +323,15 @@ pwm_create_paned_layout(PidginBuddyList *gtkblist, const char *side)
   /* Add the new paned widget in its proper place. */
   /* FRAGILE: This assumes the notebook was the last element of main_vbox. */
   gtk_box_pack_start(GTK_BOX(gtkblist->main_vbox), paned, TRUE, TRUE, 0);
+
+  /* Make conversations resize with the window so the Buddy List is fixed. */
+  g_value_init(&value, G_TYPE_BOOLEAN);
+  g_value_set_boolean(&value, TRUE);
+  gtk_container_child_set_property(GTK_CONTAINER(paned), gtkconvwin->notebook,
+                                   "resize", &value);
+  g_value_set_boolean(&value, FALSE);
+  gtk_container_child_set_property(GTK_CONTAINER(paned), gtkblist->notebook,
+                                   "resize", &value);
 }
 
 
