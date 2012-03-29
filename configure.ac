@@ -31,11 +31,12 @@ AC_DEFINE([PACKAGE_AUTHOR_STRING],["David Michael <fedora.dm0@gmail.com>"],
     [Define to the full name and e-mail of the author.])
 
 AS_CASE(["$host_os"],
-    [*mingw*],[LT_NO_UNDEFINED="-no-undefined"],
-    [LT_NO_UNDEFINED=])
-AC_SUBST(LT_NO_UNDEFINED)
+    [*mingw*],AS_VAR_SET([LT_NO_UNDEFINED],[-no-undefined]),
+    AS_VAR_SET([LT_NO_UNDEFINED]))
+AC_SUBST([LT_NO_UNDEFINED])
 
 PKG_CHECK_MODULES([pidgin],[pidgin],,
     [AC_MSG_WARN([[relying on environment pidgin_CFLAGS and pidgin_LIBS]])])
+AC_SUBST([plugindir],['${libdir}/pidgin'])
 
 AC_OUTPUT

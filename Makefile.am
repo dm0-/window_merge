@@ -17,7 +17,8 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-lib_LTLIBRARIES = window_merge.la
+plugin_LTLIBRARIES = window_merge.la
+
 window_merge_la_CFLAGS  = $(pidgin_CFLAGS)
 window_merge_la_LDFLAGS = -avoid-version -export-dynamic -module -shared \
                           $(LT_NO_UNDEFINED) \
