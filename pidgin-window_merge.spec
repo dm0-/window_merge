@@ -1,5 +1,4 @@
 Name:          pidgin-window_merge
-%global pname  %(echo -n %{name} | sed s/^pidgin-//)
 Version:       0.2
 Release:       1%{?dist}
 Summary:       Merges the Buddy List window with a conversation window
@@ -11,6 +10,9 @@ Source0:       https://github.com/downloads/dm0-/window_merge/window_merge-0.2.t
 
 BuildRequires: pidgin-devel
 Requires:      pidgin
+
+%global pname     %(echo -n %{name} | sed s/^pidgin-//)
+%global plugindir %(pkg-config --variable=plugindir pidgin)
 
 %description
 Enabling this plugin will allow conversations to be attached to the Buddy List
@@ -25,11 +27,12 @@ window.  Preferences are available to customize the plugin's panel layout.
 make %{?_smp_mflags}
 
 %install
-install -Dpm 755 .libs/%{pname}.so %{buildroot}%{_libdir}/pidgin/%{pname}.so
+make install DESTDIR=%{buildroot} plugindir=%{plugindir}
+rm -f %{buildroot}%{plugindir}/%{pname}.la
 
 
 %files
-%{_libdir}/pidgin/%{pname}.so
+%{plugindir}/%{pname}.so
 %doc AUTHORS BUGS ChangeLog COPYING NEWS README TODO
 
 
