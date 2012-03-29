@@ -18,7 +18,7 @@
 AC_INIT([Window Merge],[0.2],
     [fedora.dm0@gmail.com],[window_merge],
     [https://github.com/dm0-/window_merge])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([dist-xz])
 LT_INIT([disable-static win32-dll])
 
 AC_CONFIG_FILES([Makefile])

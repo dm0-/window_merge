@@ -16,6 +16,7 @@
 # Window Merge.  If not, see <http://www.gnu.org/licenses/>.
 
 ACLOCAL_AMFLAGS = -I m4
+EXTRA_DIST = BUGS Doxyfile
 
 plugin_LTLIBRARIES = window_merge.la
 
@@ -23,4 +24,5 @@ window_merge_la_CFLAGS  = $(pidgin_CFLAGS)
 window_merge_la_LDFLAGS = -avoid-version -export-dynamic -module -shared \
                           $(LT_NO_UNDEFINED) \
                           $(pidgin_LIBS)
-window_merge_la_SOURCES = dummy.c merge.c plugin.c utils.c
+window_merge_la_SOURCES = dummy.c merge.c plugin.c utils.c \
+                          plugin.h window_merge.h
