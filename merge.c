@@ -160,6 +160,7 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
 
   /* Migrate conversation menu items into the Buddy List bar. */
   items = gtk_container_get_children(GTK_CONTAINER(gtkconvwin->menu.menubar));
+  gtk_widget_reparent(gtkblist->menutray, gtkconvwin->menu.menubar);
   for ( item = items; item != NULL; item = item->next ) {
     gtk_widget_reparent(GTK_WIDGET(item->data), blist_menu);
 
@@ -173,6 +174,7 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
     }
 
   }
+  gtk_widget_reparent(gtkblist->menutray, blist_menu);
   pwm_store(gtkblist, "pwm_conv_menus", items);
 
   /* Display instructions for users, and hide menu items for real convs. */
