@@ -101,13 +101,18 @@ pwm_show_dummy_conversation(PidginBuddyList *gtkblist)
   if ( gtkconvwin == NULL || pidgin_conv_get_window(gtkconv) != NULL )
     return;
 
-  /* Add the label tab to the conversations notebook. */
+  /* Add the instructions tab to the conversations notebook. */
   pidgin_conv_window_add_gtkconv(gtkconvwin, gtkconv);
 
-  /* Remove the "close" button that was just added to the tab. */
+  /* Remove the "close" button that was just added to the tab label. */
   gtk_widget_destroy(gtkconv->close);
   gtkconv->close = NULL;
-  /* XXX: Maybe "show-tabs" should be forced to FALSE to prevent accidents. */
+
+  /* Show the plugin name and an About icon for those who can see the label. */
+  gtk_label_set_text(GTK_LABEL(gtkconv->tab_label), _(PLUGIN_NAME));
+  gtk_label_set_text(GTK_LABEL(gtkconv->menu_label), _(PLUGIN_NAME));
+  g_object_set(G_OBJECT(gtkconv->icon), "stock", GTK_STOCK_ABOUT, NULL);
+  g_object_set(G_OBJECT(gtkconv->menu_icon), "stock", GTK_STOCK_ABOUT, NULL);
 }
 
 
