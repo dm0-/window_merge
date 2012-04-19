@@ -32,8 +32,6 @@
 #include <prefs.h>
 #include <version.h>
 
-#include <glib/gi18n-lib.h>
-
 #include "window_merge.h"
 
 
@@ -134,10 +132,10 @@ deleting_conversation_cb(PurpleConversation *conv)
  * conversation tab.
  *
  * @param[in] src        The window from which a conversation is being dragged
- * @param[in] dst        Unused
+ * @param[in] dst        The window where a conversation is being dropped
 **/
 static void
-conversation_dragging_cb(PidginWindow *src, U PidginWindow *dst)
+conversation_dragging_cb(PidginWindow *src, PidginWindow *dst)
 {
   if ( src != dst && pwm_convs_get_blist(src) != NULL )
     deleting_conversation_cb(pidgin_conv_window_get_active_conversation(src));

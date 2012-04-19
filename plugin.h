@@ -53,14 +53,27 @@
 /* Tell the libpurple headers to build this correctly. */
 #define PURPLE_PLUGINS
 
-/* Set a translation package name. */
-#define GETTEXT_PACKAGE "pidgin-" PLUGIN_TOKEN
-
 /* Set up a convenient flag for strict compiling with unused callback parms. */
 #ifdef __GNUC__
 #define U __attribute__((unused))
 #else
 #define U /* unused */
+#endif
+
+/* Check Pidgin's localedir if a path was not explicitly specified. */
+#ifndef LOCALEDIR
+#define LOCALEDIR bindtextdomain("pidgin", NULL)
+#endif
+
+/* Define the translation domain to appear as a subpackage of Pidgin. */
+#define GETTEXT_PACKAGE "pidgin-" PLUGIN_TOKEN
+
+/* Determine whether to enable translations based on configure options. */
+#ifdef ENABLE_NLS
+#include <glib/gi18n-lib.h>
+#else
+#define  _(s) (s)
+#define N_(s) (s)
 #endif
 
 #endif /* ifndef __PLUGIN_H__ */

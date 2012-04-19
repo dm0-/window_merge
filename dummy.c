@@ -32,8 +32,6 @@
 #include <gtkconv.h>
 #include <gtkutils.h>
 
-#include <glib/gi18n-lib.h>
-
 #include "window_merge.h"
 
 
