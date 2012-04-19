@@ -45,14 +45,16 @@
 #define PLUGIN_URL     PACKAGE_URL
 #define PLUGIN_VERSION PACKAGE_VERSION
 
+#define PREF_ROOT   "/plugins/" PLUGIN_TYPE "/" PLUGIN_TOKEN
+#define PREF_HEIGHT PREF_ROOT "/blist_height"
+#define PREF_WIDTH  PREF_ROOT "/blist_width"
+#define PREF_SIDE   PREF_ROOT "/convs_side"
+
 /* Tell the libpurple headers to build this correctly. */
 #define PURPLE_PLUGINS
 
 /* Set a translation package name. */
 #define GETTEXT_PACKAGE "pidgin-" PLUGIN_TOKEN
-
-/* Define the prefs.xml location for settings. */
-#define PREF_PATH   "/plugins/" PLUGIN_TYPE "/" PLUGIN_TOKEN
 
 /* Set up a convenient flag for strict compiling with unused callback parms. */
 #ifdef __GNUC__

@@ -62,9 +62,9 @@ notify_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
 
   /* Store this size as a user preference (depending on paned orientation). */
   if ( GTK_IS_VPANED(gobject) )
-    purple_prefs_set_int(PREF_PATH "/blist_height", size);
+    purple_prefs_set_int(PREF_HEIGHT, size);
   else
-    purple_prefs_set_int(PREF_PATH "/blist_width", size);
+    purple_prefs_set_int(PREF_WIDTH, size);
 }
 
 
@@ -91,9 +91,9 @@ notify_max_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
 
   /* Fetch the user's preferred Buddy List size (depending on orientation). */
   if ( GTK_IS_VPANED(gobject) )
-    size = purple_prefs_get_int(PREF_PATH "/blist_height");
+    size = purple_prefs_get_int(PREF_HEIGHT);
   else
-    size = purple_prefs_get_int(PREF_PATH "/blist_width");
+    size = purple_prefs_get_int(PREF_WIDTH);
 
   /* If the conversations are the first pane, invert the size for the blist. */
   if ( gtk_paned_get_child1(GTK_PANED(gobject)) == gtkconvwin->notebook ) {
@@ -149,8 +149,7 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
             g_strdup(gtk_window_get_title(GTK_WINDOW(gtkblist->window))));
 
   /* Move the conversation notebook into the Buddy List window. */
-  pwm_create_paned_layout(gtkblist,
-                          purple_prefs_get_string(PREF_PATH "/convs_side"));
+  pwm_create_paned_layout(gtkblist, purple_prefs_get_string(PREF_SIDE));
 
   /* Attempt to find the Buddy List window's menu bar. */
   /* FRAGILE: This assumes the first child of main_vbox is the menu bar. */

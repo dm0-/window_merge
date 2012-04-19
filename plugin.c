@@ -223,8 +223,7 @@ plugin_load(PurplePlugin *plugin)
   purple_prefs_trigger_callback(PIDGIN_PREFS_ROOT "/conversations/placement");
 
   /* Rebuild the layout when the preference changes. */
-  purple_prefs_connect_callback(plugin, PREF_PATH "/convs_side",
-                                pref_convs_side_cb, NULL);
+  purple_prefs_connect_callback(plugin, PREF_SIDE, pref_convs_side_cb, NULL);
 
   /* Toggle the instruction panel as conversations come and go. */
   purple_signal_connect(conv_handle, "conversation-created", plugin,
@@ -283,7 +282,7 @@ get_plugin_pref_frame(U PurplePlugin *plugin)
   frame = purple_plugin_pref_frame_new();
 
   ppref = purple_plugin_pref_new_with_name_and_label
-          (PREF_PATH "/convs_side", _("Conversation pane location"));
+          (PREF_SIDE, _("Conversation pane location"));
   purple_plugin_pref_set_type(ppref, PURPLE_PLUGIN_PREF_CHOICE);
   purple_plugin_pref_add_choice(ppref, _("Right of Buddy List"), "right");
   purple_plugin_pref_add_choice(ppref, _("Left of Buddy List"), "left");
@@ -318,16 +317,16 @@ static void
 plugin_init(U PurplePlugin *plugin)
 {
   /* Initialize the root of the plugin's preferences path. */
-  purple_prefs_add_none(PREF_PATH);
+  purple_prefs_add_none(PREF_ROOT);
 
   /* Set the default size of the Buddy List in vertical panes. */
-  purple_prefs_add_int(PREF_PATH "/blist_height", 300);
+  purple_prefs_add_int(PREF_HEIGHT, 300);
 
   /* Set the default size of the Buddy List in horizontal panes. */
-  purple_prefs_add_int(PREF_PATH "/blist_width", 300);
+  purple_prefs_add_int(PREF_WIDTH, 300);
 
   /* Set the default side of the Buddy List window to attach conversations. */
-  purple_prefs_add_string(PREF_PATH "/convs_side", "right");
+  purple_prefs_add_string(PREF_SIDE, "right");
 }
 
 /**
