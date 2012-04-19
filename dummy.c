@@ -58,7 +58,14 @@ pwm_new_dummy_conversation()
   g_object_set_data(G_OBJECT(gtkconv->tab_cont),
                     "PidginConversation", gtkconv);
 
-  /* Do the label song and dance as is done for the Buddy List help tab. */
+  /* TRANSLATORS: A few notes on this one:
+     1) Try to keep the "->" styled arrows to denote menu selection, since
+        Pidgin converts those character sequences to Unicode arrows.
+     2) The first two inserted strings are both the name of the plugin, and the
+        third is the name of the conversation placement option.
+     3) The HTML formatting can be adjusted if it makes sense in a particular
+        locale, but try to keep it consistent with the instructions tab
+        displayed in the Buddy List before the user defines any accounts. */
   html = g_strdup_printf(_(""
            "<span size='larger' weight='bold'>%s is enabled!</span>\n\n"
            "This space is reserved by the %s plugin to display "

@@ -279,13 +279,24 @@ get_plugin_pref_frame(U PurplePlugin *plugin)
 
   frame = purple_plugin_pref_frame_new();
 
+  /* TRANSLATORS: This is the name of the plugin preference for deciding the
+     orientation of the panes created for the Buddy List and conversations. */
   ppref = purple_plugin_pref_new_with_name_and_label(PREF_SIDE, _(""
             "Conversation pane location"));
   purple_plugin_pref_set_type(ppref, PURPLE_PLUGIN_PREF_CHOICE);
+
+  /* TRANSLATORS: This value means: Buddy List left, conversations right. */
   purple_plugin_pref_add_choice(ppref, _("Right of Buddy List"), "right");
+
+  /* TRANSLATORS: This value means: conversations left, Buddy List right. */
   purple_plugin_pref_add_choice(ppref, _("Left of Buddy List"), "left");
+
+  /* TRANSLATORS: This value means: conversations top, Buddy List bottom. */
   purple_plugin_pref_add_choice(ppref, _("Above Buddy List"), "top");
+
+  /* TRANSLATORS: This value means: Buddy List top, conversations bottom. */
   purple_plugin_pref_add_choice(ppref, _("Below Buddy List"), "bottom");
+
   purple_plugin_pref_frame_add(frame, ppref);
 
   return frame;
@@ -349,11 +360,20 @@ static PurplePluginInfo info = {
   PLUGIN_NAME,
   PLUGIN_VERSION,
 
+  /* TRANSLATORS: As the plugin summary, this should be able to describe what
+     the plugin does in one sentence. */
   N_("Merges the Buddy List window with a conversation window"),
+
+  /* TRANSLATORS: This is the plugin description, so you can use as much
+     writing as needed to describe what the plugin can do. */
   N_("Enabling this plugin will allow conversations to be attached to the "
      "Buddy List window.  Preferences are available to customize the plugin's "
      "panel layout."),
+
+  /* TRANSLATORS: This is a proper name, so you shouldn't have to modify it
+     unless you are transliterating to a non-Latin script. */
   N_("David Michael <fedora.dm0@gmail.com>"),
+
   PLUGIN_URL,
 
   plugin_load,
