@@ -25,14 +25,9 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_DEFINE([PACKAGE_AUTHOR_UID],["dm0"],
-    [Define to the short identifier of the author.])
-AC_DEFINE([PACKAGE_AUTHOR_STRING],["David Michael <fedora.dm0@gmail.com>"],
-    [Define to the full name and e-mail of the author.])
-
 AS_CASE(["$host_os"],
-    [*mingw*],AS_VAR_SET([LT_NO_UNDEFINED],[-no-undefined]),
-    AS_VAR_SET([LT_NO_UNDEFINED]))
+    [*mingw*],[AS_VAR_SET([LT_NO_UNDEFINED],[-no-undefined])],
+    [AS_VAR_SET([LT_NO_UNDEFINED])])
 AC_SUBST([LT_NO_UNDEFINED])
 
 PKG_CHECK_MODULES([pidgin],[pidgin],,

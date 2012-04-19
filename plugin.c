@@ -216,7 +216,7 @@ plugin_load(PurplePlugin *plugin)
   gtkconv_handle = pidgin_conversations_get_handle();
 
   /* Add the conversation placement option provided by this plugin. */
-  pidgin_conv_placement_add_fnc(PLUGIN_TOKEN, _("Buddy List window"),
+  pidgin_conv_placement_add_fnc(PLUGIN_TOKEN, _(PWM_STR_CP_BLIST),
                                 &conv_placement_by_blist);
   purple_prefs_trigger_callback(PIDGIN_PREFS_ROOT "/conversations/placement");
 
@@ -279,8 +279,8 @@ get_plugin_pref_frame(U PurplePlugin *plugin)
 
   frame = purple_plugin_pref_frame_new();
 
-  ppref = purple_plugin_pref_new_with_name_and_label
-          (PREF_SIDE, _("Conversation pane location"));
+  ppref = purple_plugin_pref_new_with_name_and_label(PREF_SIDE, _(""
+            "Conversation pane location"));
   purple_plugin_pref_set_type(ppref, PURPLE_PLUGIN_PREF_CHOICE);
   purple_plugin_pref_add_choice(ppref, _("Right of Buddy List"), "right");
   purple_plugin_pref_add_choice(ppref, _("Left of Buddy List"), "left");
@@ -309,11 +309,16 @@ static PurplePluginUiInfo prefs_info = {
 /**
  * The plugin's init function, used to define plugin preferences
  *
- * @param[in] plugin     Unused
+ * @param[in] plugin     The libpurple plugin structure being initialized
 **/
 static void
-plugin_init(U PurplePlugin *plugin)
+plugin_init(PurplePlugin *plugin)
 {
+  plugin->info->name        = _(plugin->info->name);
+  plugin->info->summary     = _(plugin->info->summary);
+  plugin->info->description = _(plugin->info->description);
+  plugin->info->author      = _(plugin->info->author);
+
   /* Initialize the root of the plugin's preferences path. */
   purple_prefs_add_none(PREF_ROOT);
 
@@ -341,14 +346,14 @@ static PurplePluginInfo info = {
   PURPLE_PRIORITY_DEFAULT,
 
   PLUGIN_ID,
-  N_(PLUGIN_NAME),
+  PLUGIN_NAME,
   PLUGIN_VERSION,
 
   N_("Merges the Buddy List window with a conversation window"),
   N_("Enabling this plugin will allow conversations to be attached to the "
      "Buddy List window.  Preferences are available to customize the plugin's "
      "panel layout."),
-  PLUGIN_AUTHOR,
+  N_("David Michael <fedora.dm0@gmail.com>"),
   PLUGIN_URL,
 
   plugin_load,

@@ -47,6 +47,7 @@ pwm_new_dummy_conversation()
 {
   PidginConversation *gtkconv;  /*< The new (pretend) conversation structure */
   gchar *html;                  /*< The HTML-formatted instructions text     */
+  gchar *pretty;                /*< The HTML text with prettier arrow chars  */
 
   gtkconv = g_malloc(sizeof(PidginConversation));
 
@@ -58,16 +59,18 @@ pwm_new_dummy_conversation()
                     "PidginConversation", gtkconv);
 
   /* Do the label song and dance as is done for the Buddy List help tab. */
-  html = pidgin_make_pretty_arrows
-         (_("<span weight='bold' size='larger'>"
-            PLUGIN_NAME " is enabled!</span>\n\n"
-            "This space is reserved by the " PLUGIN_NAME " plugin to display "
-            "conversations.  Individual conversations can be dragged to this "
-            "area to attach them, or the conversation placement preference at "
-            "<b>Tools->Preferences</b> can be set to <i>Buddy List window</i> "
-            "to open all new conversations here by default."));
-  gtk_label_set_markup(GTK_LABEL(gtkconv->tab_cont), html);
+  html = g_strdup_printf(_(""
+           "<span size='larger' weight='bold'>%s is enabled!</span>\n\n"
+           "This space is reserved by the %s plugin to display "
+           "conversations.  Individual conversations can be dragged to this "
+           "area to attach them, or the conversation placement preference at "
+           "<b>Tools->Preferences</b> can be set to <i>%s</i> to open all new "
+           "conversations here by default."),
+          _(PWM_STR_NAME), _(PWM_STR_NAME), _(PWM_STR_CP_BLIST));
+  pretty = pidgin_make_pretty_arrows(html);
   g_free(html);
+  gtk_label_set_markup(GTK_LABEL(gtkconv->tab_cont), pretty);
+  g_free(pretty);
 
   /* Initialize some conversation members to prevent Pidgin from exploding. */
   gtkconv->active_conv = NULL;
@@ -107,8 +110,8 @@ pwm_show_dummy_conversation(PidginBuddyList *gtkblist)
   gtkconv->close = NULL;
 
   /* Show the plugin name and an About icon for those who can see the label. */
-  gtk_label_set_text(GTK_LABEL(gtkconv->tab_label), _(PLUGIN_NAME));
-  gtk_label_set_text(GTK_LABEL(gtkconv->menu_label), _(PLUGIN_NAME));
+  gtk_label_set_text(GTK_LABEL(gtkconv->tab_label), _(PWM_STR_NAME));
+  gtk_label_set_text(GTK_LABEL(gtkconv->menu_label), _(PWM_STR_NAME));
   g_object_set(G_OBJECT(gtkconv->icon), "stock", GTK_STOCK_ABOUT, NULL);
   g_object_set(G_OBJECT(gtkconv->menu_icon), "stock", GTK_STOCK_ABOUT, NULL);
 }

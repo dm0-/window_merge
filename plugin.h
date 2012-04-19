@@ -36,12 +36,11 @@
 #include "config.h"
 #endif
 
-#define PLUGIN_AUTHOR  PACKAGE_AUTHOR_STRING
-#define PLUGIN_ID      PLUGIN_TYPE "-" PLUGIN_UID "-" PLUGIN_TOKEN
-#define PLUGIN_NAME    PACKAGE_NAME
+#define PLUGIN_AUTHOR  "dm0"
+#define PLUGIN_ID      PLUGIN_TYPE "-" PLUGIN_AUTHOR "-" PLUGIN_TOKEN
+#define PLUGIN_NAME    PWM_STR_NAME
 #define PLUGIN_TOKEN   PACKAGE_TARNAME
 #define PLUGIN_TYPE    "gtk"
-#define PLUGIN_UID     PACKAGE_AUTHOR_UID
 #define PLUGIN_URL     PACKAGE_URL
 #define PLUGIN_VERSION PACKAGE_VERSION
 
@@ -75,5 +74,9 @@
 #define  _(s) (s)
 #define N_(s) (s)
 #endif
+
+#define PWM_STR_NAME N_("Window Merge")
+
+#define PWM_STR_CP_BLIST N_("Buddy List window")
 
 #endif /* ifndef __PLUGIN_H__ */
