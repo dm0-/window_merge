@@ -49,7 +49,7 @@ pwm_new_dummy_conversation()
   gchar *html;                  /*< The HTML-formatted instructions text     */
   gchar *pretty;                /*< The HTML text with prettier arrow chars  */
 
-  gtkconv = g_malloc(sizeof(PidginConversation));
+  gtkconv = g_new0(PidginConversation, 1);
 
   /* Define the label widget to be accepted as a conversation tab. */
   gtkconv->tab_cont = gtk_label_new(NULL);
@@ -79,13 +79,10 @@ pwm_new_dummy_conversation()
   gtk_label_set_markup(GTK_LABEL(gtkconv->tab_cont), pretty);
   g_free(pretty);
 
-  /* Initialize some conversation members to prevent Pidgin from exploding. */
-  gtkconv->active_conv = NULL;
+  /* Set up the label so it accepts dropped conversations like the infopane. */
   gtkconv->entry = gtkconv->tab_cont;
   gtkconv->infopane = gtkconv->tab_cont;
   gtkconv->infopane_hbox = gtkconv->tab_cont;
-  gtkconv->tooltips = NULL;
-  gtkconv->win = NULL;
 
   return gtkconv;
 }
