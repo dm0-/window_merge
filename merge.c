@@ -47,15 +47,15 @@
 static void
 notify_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
 {
-  PidginWindow *gtkconvwin;     /*< Conversation window merged into gobject  */
+  PidginBuddyList *gtkblist;    /*< Buddy List window containing these panes */
   gint max_position;            /*< The "max-position" property of gobject   */
   gint size;                    /*< Current size of the Buddy List pane      */
 
-  gtkconvwin = g_object_get_data(gobject, "pwm_convs");
+  gtkblist = g_object_get_data(gobject, "pwm_blist");
   size = gtk_paned_get_position(GTK_PANED(gobject));
 
-  /* If the conversations are the first pane, invert the size for the blist. */
-  if ( gtk_paned_get_child1(GTK_PANED(gobject)) == gtkconvwin->notebook ) {
+  /* If the Buddy List is not the first pane, invert the size preference. */
+  if ( gtk_paned_get_child1(GTK_PANED(gobject)) != gtkblist->notebook ) {
     g_object_get(gobject, "max-position", &max_position, NULL);
     size = max_position - size;
   }
@@ -83,11 +83,11 @@ notify_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
 static void
 notify_max_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
 {
-  PidginWindow *gtkconvwin;     /*< Conversation window merged into gobject  */
+  PidginBuddyList *gtkblist;    /*< Buddy List window containing these panes */
   gint max_position;            /*< The "max-position" property of gobject   */
   gint size;                    /*< Desired size of the Buddy List pane      */
 
-  gtkconvwin = g_object_get_data(gobject, "pwm_convs");
+  gtkblist = g_object_get_data(gobject, "pwm_blist");
 
   /* Fetch the user's preferred Buddy List size (depending on orientation). */
   if ( GTK_IS_VPANED(gobject) )
@@ -95,8 +95,8 @@ notify_max_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
   else
     size = purple_prefs_get_int(PREF_WIDTH);
 
-  /* If the conversations are the first pane, invert the size for the blist. */
-  if ( gtk_paned_get_child1(GTK_PANED(gobject)) == gtkconvwin->notebook ) {
+  /* If the Buddy List is not the first pane, invert the size preference. */
+  if ( gtk_paned_get_child1(GTK_PANED(gobject)) != gtkblist->notebook ) {
     g_object_get(gobject, "max-position", &max_position, NULL);
     size = max_position - size;
   }
@@ -119,7 +119,7 @@ notify_max_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
  *
  * This is the real core of the plugin right here.  It initializes the Buddy
  * List with a conversation window just like the project advertises.  See the
- * function pwm_merge_conversation() to reverse this effect.
+ * function pwm_destroy_conversation() to reverse this effect.
  *
  * @param[in] gtkblist   The Buddy List that will be able to show conversations
 **/
