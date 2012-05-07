@@ -42,16 +42,16 @@
  *
  * @param[in] gobject    Pointer to the GtkPaned structure that was resized
  * @param[in] pspec      Unused
- * @param[in] data       Unused
+ * @param[in] data       Pointer to the Buddy List that is a parent of gobject
 **/
 static void
-notify_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
+notify_position_cb(GObject *gobject, U GParamSpec *pspec, gpointer data)
 {
   PidginBuddyList *gtkblist;    /*< Buddy List window containing these panes */
   gint max_position;            /*< The "max-position" property of gobject   */
   gint size;                    /*< Current size of the Buddy List pane      */
 
-  gtkblist = g_object_get_data(gobject, "pwm_blist");
+  gtkblist = data;
   size = gtk_paned_get_position(GTK_PANED(gobject));
 
   /* If the Buddy List is not the first pane, invert the size preference. */
@@ -78,16 +78,16 @@ notify_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
  *
  * @param[in] gobject    Pointer to the GtkPaned structure that was resized
  * @param[in] pspec      Unused
- * @param[in] data       Unused
+ * @param[in] data       Pointer to the Buddy List that is a parent of gobject
 **/
 static void
-notify_max_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
+notify_max_position_cb(GObject *gobject, U GParamSpec *pspec, gpointer data)
 {
   PidginBuddyList *gtkblist;    /*< Buddy List window containing these panes */
   gint max_position;            /*< The "max-position" property of gobject   */
   gint size;                    /*< Desired size of the Buddy List pane      */
 
-  gtkblist = g_object_get_data(gobject, "pwm_blist");
+  gtkblist = data;
 
   /* Fetch the user's preferred Buddy List size (depending on orientation). */
   if ( GTK_IS_VPANED(gobject) )
@@ -109,8 +109,8 @@ notify_max_position_cb(GObject *gobject, U GParamSpec *pspec, U gpointer data)
                       G_CALLBACK(notify_max_position_cb), data, NULL);
 
   /* Now that system-induced slider changes are done, monitor user changes. */
-  g_signal_connect(gobject, "notify::position",
-                   G_CALLBACK(notify_position_cb), NULL);
+  g_object_connect(gobject, "signal::notify::position",
+                   G_CALLBACK(notify_position_cb), data, NULL);
 }
 
 
@@ -297,8 +297,6 @@ pwm_create_paned_layout(PidginBuddyList *gtkblist, const char *side)
     paned = gtk_vpaned_new();
   else
     paned = gtk_hpaned_new();
-  g_object_set_data(G_OBJECT(paned), "pwm_blist", gtkblist);
-  g_object_set_data(G_OBJECT(paned), "pwm_convs", gtkconvwin);
   gtk_widget_show(paned);
 
   /* Define the panes if conversations were requested before the Buddy List. */
@@ -314,8 +312,8 @@ pwm_create_paned_layout(PidginBuddyList *gtkblist, const char *side)
   }
 
   /* When the size of the panes is determined, reset the Buddy List size. */
-  g_signal_connect(G_OBJECT(paned), "notify::max-position",
-                   G_CALLBACK(notify_max_position_cb), NULL);
+  g_object_connect(G_OBJECT(paned), "signal::notify::max-position",
+                   G_CALLBACK(notify_max_position_cb), gtkblist, NULL);
 
   /* Clean up the previous layout (if one exists). */
   pwm_destroy(gtkblist, "pwm_paned");
