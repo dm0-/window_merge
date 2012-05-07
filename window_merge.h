@@ -45,4 +45,13 @@ void pwm_clear(PidginBuddyList *, const char *);
 void pwm_free(PidginBuddyList *, const char *);
 void pwm_destroy(PidginBuddyList *, const char *);
 
+/* TRANSLATORS: This is the user-visible name of the plugin.  The name was
+   intended to give a brief sense of what the plugin does, so feel free to be
+   liberal in adjusting it to make sense for a given locale. */
+#define PWM_STR_NAME N_("Window Merge")
+
+/* TRANSLATORS: This is the name of the conversation placement option that is
+   added to the list to attach conversations to the Buddy List by default. */
+#define PWM_STR_CP_BLIST N_("Buddy List window")
+
 #endif /* ifndef __WINDOW_MERGE_H__ */
