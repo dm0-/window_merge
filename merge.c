@@ -130,14 +130,15 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
   GtkBindingSet *binding_set;   /*< The binding set of GtkIMHtml widgets     */
   GtkWidget *blist_menu;        /*< The Buddy List menu bar                  */
   GtkWidget *submenu;           /*< A submenu of a conversation menu item    */
-  GList *items;                 /*< Stores widget children listing results   */
-  GList *item;                  /*< A menu item from the conversation window */
+  GList *items;                 /*< List of conversation window menu items   */
+  GList *item;                  /*< A menu item in the list (iteration)      */
 
   /* Sanity check: If the Buddy List is already merged, don't mess with it. */
   if ( pwm_blist_get_convs(gtkblist) != NULL )
     return;
 
   binding_set = gtk_binding_set_by_class(g_type_class_ref(GTK_TYPE_IMHTML));
+  blist_menu = gtk_widget_get_parent(gtkblist->menutray);
   gtkconvwin = pidgin_conv_window_new();
 
   /* Tie the Buddy List and conversation window instances together. */
@@ -150,12 +151,6 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
 
   /* Move the conversation notebook into the Buddy List window. */
   pwm_create_paned_layout(gtkblist, purple_prefs_get_string(PREF_SIDE));
-
-  /* Attempt to find the Buddy List window's menu bar. */
-  /* FRAGILE: This assumes the first child of main_vbox is the menu bar. */
-  items = gtk_container_get_children(GTK_CONTAINER(gtkblist->main_vbox));
-  blist_menu = items->data;
-  g_list_free(items);
 
   /* Migrate conversation menu items into the Buddy List bar. */
   items = gtk_container_get_children(GTK_CONTAINER(gtkconvwin->menu.menubar));
