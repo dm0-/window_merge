@@ -42,8 +42,8 @@
  *
  * @note Remember pwm_free_dummy_conversation() for the window that owns this.
 **/
-PidginConversation *
-pwm_new_dummy_conversation()
+void
+pwm_init_dummy_conversation(PidginBuddyList *gtkblist)
 {
   PidginConversation *gtkconv;  /*< The new (pretend) conversation structure */
   gchar *html;                  /*< The HTML-formatted instructions text     */
@@ -84,7 +84,8 @@ pwm_new_dummy_conversation()
   gtkconv->infopane = gtkconv->tab_cont;
   gtkconv->infopane_hbox = gtkconv->tab_cont;
 
-  return gtkconv;
+  /* Store the dummy conversation's pointer on the Buddy List. */
+  pwm_store(gtkblist, "pwm_fake_tab", gtkconv);
 }
 
 

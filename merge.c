@@ -172,7 +172,7 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
   pwm_store(gtkblist, "pwm_conv_menus", items);
 
   /* Display instructions for users, and hide menu items for real convs. */
-  pwm_store(gtkblist, "pwm_fake_tab", pwm_new_dummy_conversation());
+  pwm_init_dummy_conversation(gtkblist);
   pwm_show_dummy_conversation(gtkblist);
   pwm_set_conv_menus_visible(gtkblist, FALSE);
 

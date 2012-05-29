@@ -31,7 +31,7 @@ void pwm_create_paned_layout(PidginBuddyList *, const char *);
 void pwm_set_conv_menus_visible(PidginBuddyList *, gboolean);
 
 /* Dummy Conversation Functions */
-PidginConversation *pwm_new_dummy_conversation();
+void pwm_init_dummy_conversation(PidginBuddyList *);
 void pwm_show_dummy_conversation(PidginBuddyList *);
 void pwm_hide_dummy_conversation(PidginBuddyList *);
 void pwm_free_dummy_conversation(PidginBuddyList *);
