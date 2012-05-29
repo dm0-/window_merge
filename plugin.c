@@ -26,7 +26,6 @@
 #include <gtkblist.h>
 #include <gtkconv.h>
 #include <gtkplugin.h>
-#include <gtkutils.h>
 
 #include <pluginpref.h>
 #include <prefs.h>
@@ -192,6 +191,10 @@ conv_placement_by_blist(PidginConversation *gtkconv)
 
   if ( gtkconvwin != NULL )
     pidgin_conv_window_add_gtkconv(gtkconvwin, gtkconv);
+
+  /* XXX: A fallback placement avoids segfaults after the plugin's disabled. */
+  else
+    pidgin_conv_placement_get_fnc("last")(gtkconv);
 }
 
 
