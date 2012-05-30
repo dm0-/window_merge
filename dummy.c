@@ -167,6 +167,7 @@ pwm_free_dummy_conversation(PidginBuddyList *gtkblist)
     return;
 
   /* Destroy the label widget, and release the conversation UI memory. */
+  pwm_hide_dummy_conversation(gtkblist);
   gtk_widget_destroy(gtkconv->tab_cont);
   g_free(gtkconv);
   pwm_clear(gtkblist, "fake_tab");
