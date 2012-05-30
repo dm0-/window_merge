@@ -115,6 +115,40 @@ notify_max_position_cb(GObject *gobject, U GParamSpec *pspec, gpointer data)
 
 
 /**
+ * Pass a focus (in) event from one widget to another
+ *
+ * This is only used to trigger the signal handlers on the conversation window
+ * for removing message notifications when the Buddy List window is focused.
+ *
+ * @param[in] widget     Unused
+ * @param[in] event      Unused
+ * @param[in] data       Pointer to the widget to receive the passed event
+ * @return               Whether to stop processing other event handlers
+**/
+static gboolean
+focus_in_event_cb(U GtkWidget *widget, U GdkEventFocus *event, gpointer data)
+{
+  GtkWidget *other_widget;      /*< Widget pretending to receive an event    */
+  GdkWindow *window;            /*< Window of the widget receiving the event */
+  GdkEvent *focus;              /*< New focus event for the specified widget */
+
+  focus = gdk_event_new(GDK_FOCUS_CHANGE);
+  other_widget = data;
+  window = gtk_widget_get_window(other_widget);
+
+  focus->focus_change.window = g_object_ref(window);
+  focus->focus_change.send_event = TRUE;
+  focus->focus_change.in = TRUE;
+
+  gtk_widget_event(other_widget, focus);
+
+  gdk_event_free(focus);
+
+  return FALSE;
+}
+
+
+/**
  * Create a conversation window and merge it with the given Buddy List window
  *
  * This is the real core of the plugin right here.  It initializes the Buddy
@@ -176,6 +210,10 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
   pwm_show_dummy_conversation(gtkblist);
   pwm_set_conv_menus_visible(gtkblist, FALSE);
 
+  /* Pass focus events from Buddy List to conversation window. */
+  g_object_connect(G_OBJECT(gtkblist->window), "signal::focus-in-event",
+                   G_CALLBACK(focus_in_event_cb), gtkconvwin->window, NULL);
+
   /* Point the conversation window structure at the Buddy List's window. */
   pwm_store(gtkblist, "conv_window", gtkconvwin->window);
   gtkconvwin->window = gtkblist->window;
@@ -223,6 +261,10 @@ pwm_split_conversation(PidginBuddyList *gtkblist)
   /* Point the conversation window's structure back to its original window. */
   gtkconvwin->window = pwm_fetch(gtkblist, "conv_window");
   pwm_clear(gtkblist, "conv_window");
+
+  /* Stop passing focus events from Buddy List to conversation window. */
+  g_object_disconnect(G_OBJECT(gtkblist->window), "any_signal",
+                      G_CALLBACK(focus_in_event_cb), gtkconvwin->window, NULL);
 
   /* Return the conversation menu items to their original window's menu bar. */
   for ( item = items; item != NULL; item = item->next ) {
