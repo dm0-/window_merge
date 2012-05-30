@@ -39,11 +39,15 @@ void pwm_free_dummy_conversation(PidginBuddyList *);
 /* Utility Functions */
 PidginWindow *pwm_blist_get_convs(PidginBuddyList *);
 PidginBuddyList *pwm_convs_get_blist(PidginWindow *);
-void pwm_store(PidginBuddyList *, const char *, gpointer);
-gpointer pwm_fetch(PidginBuddyList *, const char *);
-void pwm_clear(PidginBuddyList *, const char *);
-void pwm_free(PidginBuddyList *, const char *);
-void pwm_destroy(PidginBuddyList *, const char *);
+
+#define pwm_store(pidgin_window, name, value) \
+  g_object_set_data(G_OBJECT((pidgin_window)->window), "pwm_" name, value)
+
+#define pwm_fetch(pidgin_window, name) \
+  g_object_get_data(G_OBJECT((pidgin_window)->window), "pwm_" name)
+
+#define pwm_clear(pidgin_window, name) \
+  g_object_steal_data(G_OBJECT((pidgin_window)->window), "pwm_" name)
 
 /* TRANSLATORS: This is the user-visible name of the plugin.  The name was
    intended to give a brief sense of what the plugin does, so feel free to be

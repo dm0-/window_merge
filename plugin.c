@@ -117,7 +117,7 @@ deleting_conversation_cb(PurpleConversation *conv)
     pwm_show_dummy_conversation(gtkblist);
     gtk_window_set_icon_list(GTK_WINDOW(gtkblist->window), NULL);
     gtk_window_set_title(GTK_WINDOW(gtkblist->window),
-                         pwm_fetch(gtkblist, "pwm_title"));
+                         pwm_fetch(gtkblist, "title"));
     pwm_set_conv_menus_visible(gtkblist, FALSE);
   }
 }

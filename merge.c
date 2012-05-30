@@ -146,7 +146,7 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
   g_object_set_data(G_OBJECT(gtkconvwin->notebook), "pwm_blist", gtkblist);
 
   /* Backup the Buddy List window title for restoring it later. */
-  pwm_store(gtkblist, "pwm_title",
+  pwm_store(gtkblist, "title",
             g_strdup(gtk_window_get_title(GTK_WINDOW(gtkblist->window))));
 
   /* Move the conversation notebook into the Buddy List window. */
@@ -169,7 +169,7 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
 
   }
   gtk_widget_reparent(gtkblist->menutray, blist_menu);
-  pwm_store(gtkblist, "pwm_conv_menus", items);
+  pwm_store(gtkblist, "conv_menus", items);
 
   /* Display instructions for users, and hide menu items for real convs. */
   pwm_init_dummy_conversation(gtkblist);
@@ -204,15 +204,19 @@ void
 pwm_destroy_conversation(PidginBuddyList *gtkblist)
 {
   PidginWindow *gtkconvwin;     /*< Conversation window merged into gtkblist */
+  GtkWidget *paned;             /*< The panes on the Buddy List window       */
   GtkWidget *submenu;           /*< A submenu of a conversation menu item    */
   GList *gtkconvs;              /*< List of conversations shown in gtkblist  */
   GList *gtkconv;               /*< A conversation in the list (iteration)   */
   GList *items;                 /*< List of conversation window menu items   */
   GList *item;                  /*< A menu item in the list (iteration)      */
+  gchar *title;                 /*< Original title of the Buddy List window  */
 
   gtkconvwin = pwm_blist_get_convs(gtkblist);
   gtkconvs = g_list_copy(pidgin_conv_window_get_gtkconvs(gtkconvwin));
-  items = pwm_fetch(gtkblist, "pwm_conv_menus");
+  items = pwm_fetch(gtkblist, "conv_menus");
+  paned = pwm_fetch(gtkblist, "paned");
+  title = pwm_fetch(gtkblist, "title");
 
   /* Remove any conversations (except the dummy tab) from the Buddy List. */
   pwm_show_dummy_conversation(gtkblist);
@@ -245,19 +249,20 @@ pwm_destroy_conversation(PidginBuddyList *gtkblist)
     gtk_widget_destroy(GTK_WIDGET(item->data));
   }
   g_list_free(items);
-  pwm_clear(gtkblist, "pwm_conv_menus");
+  pwm_clear(gtkblist, "conv_menus");
 
   /* Restore the Buddy List's original structure, and destroy the panes. */
   gtk_widget_reparent(gtkblist->notebook, gtkblist->main_vbox);
   gtk_box_set_child_packing(GTK_BOX(gtkblist->main_vbox), gtkblist->notebook,
                             TRUE, TRUE, 0, GTK_PACK_START);
-  pwm_destroy(gtkblist, "pwm_paned");
+  gtk_widget_destroy(paned);
+  pwm_clear(gtkblist, "paned");
 
   /* Restore the window title and icons from before conversations set them. */
   gtk_window_set_icon_list(GTK_WINDOW(gtkblist->window), NULL);
-  gtk_window_set_title(GTK_WINDOW(gtkblist->window),
-                       pwm_fetch(gtkblist, "pwm_title"));
-  pwm_free(gtkblist, "pwm_title");
+  gtk_window_set_title(GTK_WINDOW(gtkblist->window), title);
+  g_free(title);
+  pwm_clear(gtkblist, "title");
 
   /* With the Buddy List reset, run its old conversations through placement. */
   for ( gtkconv = gtkconvs; gtkconv != NULL; gtkconv = gtkconv->next )
@@ -311,8 +316,8 @@ pwm_create_paned_layout(PidginBuddyList *gtkblist, const char *side)
                    G_CALLBACK(notify_max_position_cb), gtkblist, NULL);
 
   /* Clean up the previous layout (if one exists). */
-  pwm_destroy(gtkblist, "pwm_paned");
-  pwm_store(gtkblist, "pwm_paned", paned);
+  gtk_widget_destroy(pwm_fetch(gtkblist, "paned"));
+  pwm_store(gtkblist, "paned", paned);
 
   /* Add the new paned widget in its proper place. */
   /* FRAGILE: This assumes the notebook was the last element of main_vbox. */
@@ -341,7 +346,7 @@ pwm_set_conv_menus_visible(PidginBuddyList *gtkblist, gboolean visible)
   GList *items;                 /*< List of conversation window menu items   */
   GList *item;                  /*< A menu item in the list (iteration)      */
 
-  items = pwm_fetch(gtkblist, "pwm_conv_menus");
+  items = pwm_fetch(gtkblist, "conv_menus");
 
   if ( visible )
     for ( item = items; item != NULL; item = item->next )

@@ -85,7 +85,7 @@ pwm_init_dummy_conversation(PidginBuddyList *gtkblist)
   gtkconv->infopane_hbox = gtkconv->tab_cont;
 
   /* Store the dummy conversation's pointer on the Buddy List. */
-  pwm_store(gtkblist, "pwm_fake_tab", gtkconv);
+  pwm_store(gtkblist, "fake_tab", gtkconv);
 }
 
 
@@ -100,7 +100,7 @@ pwm_show_dummy_conversation(PidginBuddyList *gtkblist)
   PidginConversation *gtkconv;  /*< The fake conversation structure          */
   PidginWindow *gtkconvwin;     /*< The conversation window tied to gtkblist */
 
-  gtkconv = pwm_fetch(gtkblist, "pwm_fake_tab");
+  gtkconv = pwm_fetch(gtkblist, "fake_tab");
   gtkconvwin = pwm_blist_get_convs(gtkblist);
 
   /* Sanity check: Ensure the Buddy List is merged and not showing the tab. */
@@ -133,7 +133,7 @@ pwm_hide_dummy_conversation(PidginBuddyList *gtkblist)
   PidginConversation *gtkconv;  /*< The fake conversation structure          */
   PidginWindow *gtkconvwin;     /*< The conversation window that has gtkconv */
 
-  gtkconv = pwm_fetch(gtkblist, "pwm_fake_tab");
+  gtkconv = pwm_fetch(gtkblist, "fake_tab");
   gtkconvwin = pidgin_conv_get_window(gtkconv);
 
   /* Sanity check: If the dummy tab isn't being shown, leave it alone. */
@@ -160,7 +160,7 @@ pwm_free_dummy_conversation(PidginBuddyList *gtkblist)
 {
   PidginConversation *gtkconv;  /*< The fake conversation structure          */
 
-  gtkconv = pwm_fetch(gtkblist, "pwm_fake_tab");
+  gtkconv = pwm_fetch(gtkblist, "fake_tab");
 
   /* Sanity check: Ensure the Buddy List has an associated dummy tab. */
   if ( gtkconv == NULL )
@@ -168,5 +168,6 @@ pwm_free_dummy_conversation(PidginBuddyList *gtkblist)
 
   /* Destroy the label widget, and release the conversation UI memory. */
   gtk_widget_destroy(gtkconv->tab_cont);
-  pwm_free(gtkblist, "pwm_fake_tab");
+  g_free(gtkconv);
+  pwm_clear(gtkblist, "fake_tab");
 }
