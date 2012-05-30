@@ -26,7 +26,7 @@
 
 /* Functions for Merged Windows */
 void pwm_merge_conversation(PidginBuddyList *);
-void pwm_destroy_conversation(PidginBuddyList *);
+void pwm_split_conversation(PidginBuddyList *);
 void pwm_create_paned_layout(PidginBuddyList *, const char *);
 void pwm_set_conv_menus_visible(PidginBuddyList *, gboolean);
 

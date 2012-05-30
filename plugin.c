@@ -262,7 +262,7 @@ plugin_unload(U PurplePlugin *plugin)
   purple_prefs_trigger_callback(PIDGIN_PREFS_ROOT "/conversations/placement");
 
   /* XXX: There should be an interface to list available Buddy List windows. */
-  pwm_destroy_conversation(pidgin_blist_get_default_gtk_blist());
+  pwm_split_conversation(pidgin_blist_get_default_gtk_blist());
 
   return TRUE;
 }
