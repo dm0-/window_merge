@@ -63,3 +63,89 @@ pwm_convs_get_blist(PidginWindow *gtkconvwin)
 
   return g_object_get_data(G_OBJECT(gtkconvwin->notebook), "pwm_blist");
 }
+
+
+/**
+ * Given a parented widget, replace it and reparent it into a new container
+ *
+ * @param[in] child      The widget to be replaced and reparented
+ * @param[in] swap       The widget that will be the replacement
+ * @param[in] new_parent The container to adopt the displaced child widget
+ *
+ * @note This only supports existing parent widgets of type GtkPaned or GtkBox.
+**/
+void
+pwm_widget_replace(GtkWidget *child, GtkWidget *swap, GtkWidget *new_parent)
+{
+  GtkWidget *parent;            /*< The parent of the widget to be replaced  */
+  GValue val1 = G_VALUE_INIT;   /*< GtkContainer child property (manual get) */
+  GValue val2 = G_VALUE_INIT;   /*< GtkContainer child property (manual get) */
+  GtkPackType pack_type;        /*< GtkBox child property "pack-type"        */
+  guint padding;                /*< GtkBox child property "padding"          */
+  gboolean expand;              /*< GtkBox child property "expand"           */
+  gboolean fill;                /*< GtkBox child property "fill"             */
+  gboolean is_pane1;            /*< Whether the child is the first pane      */
+  gboolean should_unparent;     /*< Whether the replacement is parented      */
+
+  /* Sanity check: If not given a child or replacement, we've nothing to do. */
+  if ( child == NULL || swap == NULL )
+    return;
+
+  parent = gtk_widget_get_parent(child);
+  should_unparent = GTK_IS_CONTAINER(gtk_widget_get_parent(swap));
+
+  /* For a GtkPaned parent, retrieve the current child widget properties. */
+  if ( GTK_IS_PANED(parent) ) {
+    g_value_init(&val1, G_TYPE_BOOLEAN);
+    gtk_container_child_get_property(GTK_CONTAINER(parent), child,
+                                     "resize", &val1);
+    g_value_init(&val2, G_TYPE_BOOLEAN);
+    gtk_container_child_get_property(GTK_CONTAINER(parent), child,
+                                     "shrink", &val2);
+    is_pane1 = gtk_paned_get_child1(GTK_PANED(parent)) == child;
+  }
+
+  /* For a GtkBox parent, retrieve the current child widget properties. */
+  else if ( GTK_IS_BOX(parent) ) {
+    g_value_init(&val1, G_TYPE_INT);
+    gtk_container_child_get_property(GTK_CONTAINER(parent), child,
+                                     "position", &val1);
+    gtk_box_query_child_packing(GTK_BOX(parent), child,
+                                &expand, &fill, &padding, &pack_type);
+  }
+
+  /* Unparent if the replacement already has a parent container. */
+  if ( should_unparent ) {
+    g_object_ref_sink(G_OBJECT(swap));
+    gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(swap)), swap);
+  }
+
+  /* If no one is willing to adopt the orphaned child, it must be destroyed. */
+  if ( new_parent != NULL )
+    gtk_widget_reparent(child, new_parent);
+  else
+    gtk_widget_destroy(child);
+
+  /* For a GtkPaned parent, add the new widget and restore child properties. */
+  if ( GTK_IS_PANED(parent) ) {
+    if ( is_pane1 )
+      gtk_paned_pack1(GTK_PANED(parent), swap,
+                      g_value_get_boolean(&val1), g_value_get_boolean(&val2));
+    else
+      gtk_paned_pack2(GTK_PANED(parent), swap,
+                      g_value_get_boolean(&val1), g_value_get_boolean(&val2));
+  }
+
+  /* For a GtkBox parent, add the new widget and restore child properties. */
+  else if ( GTK_IS_BOX(parent) ) {
+    if ( pack_type == GTK_PACK_START )
+      gtk_box_pack_start(GTK_BOX(parent), swap, expand, fill, padding);
+    else
+      gtk_box_pack_end(GTK_BOX(parent), swap, expand, fill, padding);
+    gtk_box_reorder_child(GTK_BOX(parent), swap, g_value_get_int(&val1));
+  }
+
+  /* Remove the replacement's temporary reference that avoided destruction. */
+  if ( should_unparent )
+    g_object_unref(G_OBJECT(swap));
+}

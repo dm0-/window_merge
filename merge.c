@@ -252,10 +252,7 @@ pwm_destroy_conversation(PidginBuddyList *gtkblist)
   pwm_clear(gtkblist, "conv_menus");
 
   /* Restore the Buddy List's original structure, and destroy the panes. */
-  gtk_widget_reparent(gtkblist->notebook, gtkblist->main_vbox);
-  gtk_box_set_child_packing(GTK_BOX(gtkblist->main_vbox), gtkblist->notebook,
-                            TRUE, TRUE, 0, GTK_PACK_START);
-  gtk_widget_destroy(paned);
+  pwm_widget_replace(paned, gtkblist->notebook, NULL);
   pwm_clear(gtkblist, "paned");
 
   /* Restore the window title and icons from before conversations set them. */
@@ -287,10 +284,12 @@ void
 pwm_create_paned_layout(PidginBuddyList *gtkblist, const char *side)
 {
   PidginWindow *gtkconvwin;     /*< Conversation window merged into gtkblist */
+  GtkWidget *old_paned;         /*< The existing paned layout, if it exists  */
   GtkWidget *paned;             /*< The new layout panes being created       */
   GValue value = G_VALUE_INIT;  /*< For passing a property value to a widget */
 
   gtkconvwin = pwm_blist_get_convs(gtkblist);
+  old_paned = pwm_fetch(gtkblist, "paned");
 
   /* Create the requested vertical or horizontal paned layout. */
   if ( side != NULL && (*side == 't' || *side == 'b') )
@@ -298,30 +297,34 @@ pwm_create_paned_layout(PidginBuddyList *gtkblist, const char *side)
   else
     paned = gtk_hpaned_new();
   gtk_widget_show(paned);
-
-  /* Define the panes if conversations were requested before the Buddy List. */
-  if ( side != NULL && (*side == 't' || *side == 'l') ) {
-    gtk_widget_reparent(gtkconvwin->notebook, paned);
-    gtk_widget_reparent(gtkblist->notebook, paned);
-  }
-
-  /* Otherwise, the conversations were requested after the Buddy List. */
-  else {
-    gtk_widget_reparent(gtkblist->notebook, paned);
-    gtk_widget_reparent(gtkconvwin->notebook, paned);
-  }
+  pwm_store(gtkblist, "paned", paned);
 
   /* When the size of the panes is determined, reset the Buddy List size. */
   g_object_connect(G_OBJECT(paned), "signal::notify::max-position",
                    G_CALLBACK(notify_max_position_cb), gtkblist, NULL);
 
-  /* Clean up the previous layout (if one exists). */
-  gtk_widget_destroy(pwm_fetch(gtkblist, "paned"));
-  pwm_store(gtkblist, "paned", paned);
+  /* If the Buddy List is pristine, make the panes and replace its notebook. */
+  if ( old_paned == NULL ) {
+    if ( side != NULL && (*side == 't' || *side == 'l') ) {
+      gtk_widget_reparent(gtkconvwin->notebook, paned);
+      pwm_widget_replace(gtkblist->notebook, paned, paned);
+    } else {
+      pwm_widget_replace(gtkblist->notebook, paned, paned);
+      gtk_widget_reparent(gtkconvwin->notebook, paned);
+    }
+  }
 
-  /* Add the new paned widget in its proper place. */
-  /* FRAGILE: This assumes the notebook was the last element of main_vbox. */
-  gtk_box_pack_start(GTK_BOX(gtkblist->main_vbox), paned, TRUE, TRUE, 0);
+  /* If existing panes are being replaced, define the new layout and use it. */
+  else {
+    if ( side != NULL && (*side == 't' || *side == 'l') ) {
+      gtk_widget_reparent(gtkconvwin->notebook, paned);
+      gtk_widget_reparent(gtkblist->notebook, paned);
+    } else {
+      gtk_widget_reparent(gtkblist->notebook, paned);
+      gtk_widget_reparent(gtkconvwin->notebook, paned);
+    }
+    pwm_widget_replace(old_paned, paned, NULL);
+  }
 
   /* Make conversations resize with the window so the Buddy List is fixed. */
   g_value_init(&value, G_TYPE_BOOLEAN);

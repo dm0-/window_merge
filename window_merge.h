@@ -39,6 +39,7 @@ void pwm_free_dummy_conversation(PidginBuddyList *);
 /* Utility Functions */
 PidginWindow *pwm_blist_get_convs(PidginBuddyList *);
 PidginBuddyList *pwm_convs_get_blist(PidginWindow *);
+void pwm_widget_replace(GtkWidget *, GtkWidget *, GtkWidget *);
 
 #define pwm_store(pidgin_window, name, value) \
   g_object_set_data(G_OBJECT((pidgin_window)->window), "pwm_" name, value)
