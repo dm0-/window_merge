@@ -1,14 +1,6 @@
 /**
  * @file utils.c
- * Provides routines for associating arbitrary data with merged windows
- *
- * The real purpose of the functions in this file is to take what would be
- * global variables and glue them to an instance of a Buddy List.  This will
- * allow easier support for independent settings across multiple Buddy Lists.
- *
- * Note that data is associated with the Buddy List's window widget, which is
- * also assigned in the conversation's structure.  This allows the data to be
- * accessed from either structure (if that was really necessary).
+ * Provides a few miscellaneous routines that make life easier
  *
  * @section LICENSE
  * Copyright (C) 2012 David Michael <fedora.dm0@gmail.com>
@@ -84,7 +76,7 @@ pwm_widget_replace(GtkWidget *child, GtkWidget *swap, GtkWidget *new_parent)
   guint padding;                /*< GtkBox child property "padding"          */
   gboolean expand;              /*< GtkBox child property "expand"           */
   gboolean fill;                /*< GtkBox child property "fill"             */
-  gboolean is_pane1;            /*< Whether the child is the first pane      */
+  gboolean is_pane1 = FALSE;    /*< Whether the child is the first pane      */
   gboolean should_unparent;     /*< Whether the replacement is parented      */
 
   /* Sanity check: If not given a child or replacement, we've nothing to do. */
