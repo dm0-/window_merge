@@ -279,9 +279,10 @@ pwm_split_conversation(PidginBuddyList *gtkblist)
                      gtkconvwin->notebook, NULL);
   pwm_clear(gtkblist, "placeholder");
 
-  /* Display the conversation window, and free its instructions tab. */
-  pidgin_conv_window_show(gtkconvwin);
+  /* Free the dummy conversation, and display the window if it survives. */
   pwm_free_dummy_conversation(gtkblist);
+  if ( g_list_find(pidgin_conv_windows_get_list(), gtkconvwin) != NULL )
+    pidgin_conv_window_show(gtkconvwin);
 
   /* Restore the Buddy List's original structure, and destroy the panes. */
   pwm_widget_replace(paned, gtkblist->notebook, NULL);
