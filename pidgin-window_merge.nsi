@@ -1,36 +1,39 @@
 #!/usr/bin/makensis
+# Use this in the source directory after the "make" command ends successfully.
 
 Name "Window Merge 0.2"
 OutFile "Install Window Merge 0.2.exe"
-InstallDir $ProgramFiles\Pidgin
 
 RequestExecutionLevel admin
-SetCompressor bzip2
-ShowInstDetails show
-ShowUninstDetails show
+SetCompressor /solid lzma
+XPStyle on
+
+# Page configuration
+
+Page license
+LicenseData COPYING
+LicenseText \
+    "This is not an EULA.  It is a free software distribution license.  The \
+     source code is available at <https://github.com/dm0-/window_merge>." \
+    "Continue"
 
 Page directory
+DirText \
+    "Please select the Pidgin installation folder.  This folder must contain \
+     the file pidgin.exe to proceed." \
+    "Pidgin Installation Folder"
+InstallDir $ProgramFiles\Pidgin
+InstallDirRegKey HKLM SOFTWARE\pidgin ""
+
 Page instfiles
+ShowInstDetails show
 
-DirText "Please select the Pidgin installation folder." \
-        "This folder must contain pidgin.exe."
+UninstPage uninstConfirm
 
-Function .onInit
-  Push $0
+UninstPage instfiles
+ShowUninstDetails show
 
-  ReadRegStr $0 HKLM SOFTWARE\pidgin ""
-  StrCmp $0 "" usedef
-
-  IfFileExists $0\pidgin.exe works
-    StrCpy $0 ""
-  works:
-
-  StrCmp $0 "" usedef
-  StrCpy $INSTDIR $0
-  usedef:
-
-  Pop $0
-FunctionEnd
+# Callback functions
 
 Function .onVerifyInstDir
   IfFileExists $INSTDIR\pidgin.exe good
@@ -38,17 +41,21 @@ Function .onVerifyInstDir
   good:
 FunctionEnd
 
+# Installation sections
+
 Section "Window Merge"
   SectionIn RO
   SetOutPath $INSTDIR\plugins
   File .libs/window_merge.dll
 SectionEnd
 
+Section -post
+  WriteUninstaller "$INSTDIR\Uninstall Window Merge.exe"
+SectionEnd
+
+# Uninstallation sections
+
 Section Uninstall
   Delete /rebootok $INSTDIR\plugins\window_merge.dll
   Delete /rebootok "$INSTDIR\Uninstall Window Merge.exe"
-SectionEnd
-
-Section -post
-  WriteUninstaller "$INSTDIR\Uninstall Window Merge.exe"
 SectionEnd
