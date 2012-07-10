@@ -1,25 +1,139 @@
+2012-07-10  David Michael <fedora.dm0@gmail.com>
+
+	Updated project distribution, version 0.3
+
+2012-07-06 David Michael <fedora.dm0@gmail.com>
+
+	* merge.c (pwm_split_conversation): Conditionally display the window.
+
+	* merge.c (pwm_merge_conversation): Simplify registering accelerators.
+	(pwm_split_conversation): Simplify unregistering accelerators.
+
+2012-05-31 David Michael <fedora.dm0@gmail.com>
+
+	* utils.c (pwm_widget_replace): Initialize a boolean to stop a warning.
+
+2012-05-30  David Michael <fedora.dm0@gmail.com>
+
+	* merge.c (focus_in_event_cb): Add this handler to synthesize events.
+	(pwm_merge_conversation): Start simulating focus to the hidden window.
+	(pwm_split_conversation): Stop simulating focus to the hidden window.
+
+	* merge.c: pwm_destroy_conversation -> pwm_split_conversation
+	(pwm_merge_conversation): Store the conversations' GtkWindow for later.
+	(pwm_split_conversation): Restore the window instead of destroying it.
+	(pwm_create_paned_layout): Create a placeholder for the conversations.
+	* plugin.c (plugin_unload): Use the new function name.
+	* window_merge.h: Update the function's prototype.
+
+	* utils.c (pwm_widget_replace): Add a widget replacement function.
+	* window_merge.h: Define its prototype.
+	* merge.c (pwm_destroy_conversation): Replace (not reparent) notebooks.
+	(pwm_create_paned_layout): Use replacement for constructing the panes.
+
+	* dummy.c (pwm_free_dummy_conversation): Remove the dummy tab first.
+
+	* utils.c (pwm_store, pwm_fetch, pwm_clear, pwm_free, pwm_destroy):
+	Remove these function definitions entirely.
+	* window_merge.h: Remove the above functions' prototypes.
+	(pwm_store, pwm_fetch, pwm_clear): Define new convenience macros.
+	* merge.c: Remove prefixes from pointer names, and handle freeing.
+	* plugin.c: Likewise.
+	* dummy.c: Likewise.
+
+2012-05-29  David Michael <fedora.dm0@gmail.com>
+
+	* dummy.c: pwm_new_dummy_conversation -> pwm_init_dummy_conversation
+	(pwm_init_dummy_conversation): Hide the dummy struct from callers.
+	* merge.c (pwm_merge_conversation): Use the new function name and type.
+	* window_merge.h: Update the function's prototype.
+
+	* plugin.c (conv_placement_by_blist): Try "last" placement if disabled.
+
+2012-05-08  David Michael <fedora.dm0@gmail.com>
+
+	* merge.c (pwm_merge_conversation): Use menutray's parent for menu bar.
+
+2012-05-07  David Michael <fedora.dm0@gmail.com>
+
+	* merge.c (notify_position_cb, notify_max_position_cb):
+	Use the signal data pointers instead of g_object_get_data.
+	(notify_max_position_cb, pwm_create_paned_layout):
+	Switch to g_object_connect and set the signal data pointers.
+	(pwm_create_paned_layout): Remove g_object_set_data on the panes.
+
+	* merge.c (notify_position_cb, notify_max_position_cb):
+	Determine slider position based on Buddy List size instead of convs.
+
+	* window_merge.h: Add global definitions for user-visible strings.
+	* plugin.h: Remove global definitions for user-visible strings.
+
+2012-04-29  David Michael <fedora.dm0@gmail.com>
+
+	* dummy.c (pwm_new_dummy_conversation): Zero-fill the dummy's struct.
+
+2012-04-19  David Michael <fedora.dm0@gmail.com>
+
+	* plugin.c (plugin_init) [ENABLE_NLS]: Initialize the text domain.
+
+	* plugin.h: Add TRANSLATORS comments for documenting the POT file.
+	* plugin.c: Likewise.
+	* dummy.c: Likewise.
+
+	* plugin.h: Remove most strings' configure-dependence for xgettext.
+	* plugin.c (info): Adjust the struct to mark strings for translation.
+	(plugin_init): Translate plugin property strings.
+	(plugin_load): Use the prefixed preference name string.
+	(get_plugin_pref_frame): Refactor strings to allow translator comments.
+	* dummy.c (pwm_new_dummy_conversation): Switch to a formatted string.
+	(pwm_show_dummy_conversation): Use the new prefixed name string.
+
+	* plugin.h: Centralize i18n includes and CPP definitions.
+	* plugin.c: Remove unnecessary i18n include.
+	* dummy.c: Likewise.
+
+	* plugin.h: Define a separate identifier for each preference.
+	* plugin.c (plugin_init): Initialize all preferences with new labels.
+	(plugin_load): Use the new layout pref label for connecting the signal.
+	(get_plugin_pref_frame): Use the layout label in the preferences frame.
+	* merge.c (pwm_merge_conversation): Use the new layout pref label.
+	(notify_position_cb, notify_max_position_cb): Use new size pref labels.
+
+2012-04-13  David Michael <fedora.dm0@gmail.com>
+
+	* dummy.c (pwm_show_dummy_conversation): Add a tab label and icon.
+
+2012-04-06  David Michael <fedora.dm0@gmail.com>
+
+	* merge.c (pwm_merge_conversation): Reorder the menutray widget.
+
+2012-03-28  David Michael <fedora.dm0@gmail.com>
+
+	* merge.c (pwm_create_paned_layout): Set "resize" child properties.
+
 2012-03-26  David Michael <fedora.dm0@gmail.com>
 
-	* : Updated project distribution, 0.2
+	Updated project distribution, version 0.2
 
-	* merge.c (pwm_merge_conversation): Add conversation menu accel_groups
-	(pwm_destroy_conversation): Remove the accel_groups when finished
+	* merge.c (pwm_merge_conversation): Add conversation menu accel_groups.
+	(pwm_destroy_conversation): Remove the accel_groups when finished.
 
 2012-03-24  David Michael <fedora.dm0@gmail.com>
 
-	* merge.c (pwm_destroy_conversation,pwm_set_conv_menus_visible):
-	Added or rearranged some variables for uniformity in the file
-	(pwm_destroy_conversation): Replace Buddy List conversations on disable
+	* merge.c (pwm_destroy_conversation, pwm_set_conv_menus_visible):
+	Added or rearranged some variables for uniformity in the file.
+
+	* merge.c (pwm_destroy_conversation): Spare conversations on disable.
 
 2012-03-23  David Michael <fedora.dm0@gmail.com>
 
-	* merge.c (pwm_merge_conversation): Skip some "move-cursor" bindings
+	* merge.c (pwm_merge_conversation): Skip some "move-cursor" bindings.
 
 2012-03-22  David Michael <fedora.dm0@gmail.com>
 
-	* merge.c (pwm_destroy_conversation): Unset window icons
-	* plugin.c (deleting_conversation_cb): Unset window icons
+	* merge.c (pwm_destroy_conversation): Unset window icons.
+	* plugin.c (deleting_conversation_cb): Unset window icons.
 
 2012-03-16  David Michael <fedora.dm0@gmail.com>
 
-	* : Initial project distribution, 0.1
+	Initial project distribution, version 0.1

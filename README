@@ -10,7 +10,7 @@ though package names such as "pidgin-window_merge" may be used, this plugin was
 not written and is not maintained by Pidgin developers.  The plugin should be
 considered unsupported and unstable for the time being.
 
-This file was last revised for distribution with version 0.2.
+This file was last revised for distribution with version 0.3.
 
 
 PLUGIN OVERVIEW
@@ -27,9 +27,9 @@ conversation placement preference that allows new conversations to be opened in
 the Buddy List by default.
 
 Please note that this plugin works by altering internal Pidgin data structures
-in ways that were not intended by the Pidgin developers, and at this point, it
-has received extremely limited testing.  For these reasons, this plugin should
-not be enabled in situations where receiving instant messages is critical.
+in ways that were not intended by the Pidgin developers.  For this reason, this
+plugin should not be enabled in situations where receiving instant messages is
+critical.
 
 
 DOCUMENTATION / PROJECT HISTORY
@@ -67,16 +67,23 @@ necessary to build the plugin (run from this file's source directory):
     ./configure
     make
 
-You can specify the libdir variable and run "make install" if desired, but the
-plugin consists of only one file.  It should have been built at the location
-".libs/window_merge.so", and you will probably want to copy it to your user-
-specific plugin directory "~/.purple/plugins/".  On a modern GNU/Linux system:
+If successful, the plugin should have been built at ".libs/window_merge.so".
+This command will install the plugin for your own account:
 
-    install -Dpm 755 .libs/window_merge.so ~/.purple/plugins/window_merge.so
+    make install plugindir=~/.purple/plugins
 
-Note that if configure specified to compile the project with MinGW, the output
-file would be ".libs/window_merge.dll".  This file can be placed either in the
-"Application Data\.purple\plugins" or the "AppData\.purple\plugins" folder in
-your home directory, depending on your version of Microsoft Windows.
+Alternatively, run the following as root to install the plugin for all users:
 
-More detailed build information can be found in the INSTALL file.
+    make install
+
+More information about build commands can be found in the INSTALL file.
+
+Note that if configure specified to compile the project for Microsoft Windows
+with MinGW, the output file would be ".libs/window_merge.dll".
+
+This file can be placed in the folder "%AppData%\.purple\plugins" to install it
+for your own account.  (Create the "plugins" folder if it doesn't exist; enter
+"%AppData%\.purple" directly into the Explorer address bar to find it.)
+
+To install it for all users, place "window_merge.dll" in the "plugins" folder
+found at Pidgin's installation location.

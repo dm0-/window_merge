@@ -8,14 +8,7 @@ The issues outlined below are all the problems I have encountered in my own
 extremely limited testing of this plugin.  This file also serves as a to-do
 list for myself with some methods to consider for fixing the problems.
 
-For a listing of theoretical issues that other GTK plugins could experience due
-to this plugin, grep the C files for "FRAGILE".  These comments identify points
-where some assumptions were made about the GTK widget structure.  For example,
-the Buddy List menu bar has no explicit pointer in the structure, so it is
-assumed to be the first child element of main_vbox, but another plugin could
-have changed its location.
-
-This file was last revised for distribution with version 0.2.
+This file was last revised for distribution with version 0.3.
 
 
 The following is the list of known issues with the plugin, sorted approximately
@@ -23,31 +16,23 @@ from most troublesome to least.
 
 * There are a few ways to cause Pidgin to segfault from messing with the dummy
   conversation's tab (dragging it into itself, etc.).  This is mostly because
-  the conversation UI doesn't have an active_conv.
-
-  - Ideally, get the PIDGIN_CONVERSATION(PurpleConversation) macro to return
-    NULL when given NULL in the mainline Pidgin code, and add any other
-    necessary sanity checks in their gtkconv.c callback functions.
+  the conversation UI doesn't have an active_conv, which some functions use.
 
   - Trying to fake the active_conv would cause all sorts of other troubles that
-    are circumvented by setting it to NULL.  Still, it's on the radar.
+    are circumvented by setting it to NULL.
 
-  - Intercepting GTK events attempting to modify the dummy page is a possible
+  - Intercepting any GTK events interacting with the dummy tab is a possible
     solution, but it will require a slew of callbacks to cancel user actions.
 
   I imagine most users will have the tab positions at the top which will hide
   them automatically when there is only one conversation, avoiding this issue.
 
-* Now that I've taken the time to attempt to run the plugin on Windows, there
-  seem to be issues related to disabling the plugin.  Widgets aren't redrawn
-  correctly, etc.  The issues seem to disappear if the plugin is re-enabled.  I
-  am not quite certain where to begin with these problems, as they do not exist
-  on GNU/Linux systems.
+  + Pidgin ticket #15062 has a patch to allow safely reordering the dummy tab.
 
 * Several cursor movement key bindings were disabled on HTML fields.  This was
   done in order to enable tab switching and message retrieval, since the Buddy
-  List has an event handler that stops events which have a binding defined on a
-  focused HTML widget.
+  List window has an event handler that stops events which have a binding
+  defined on a focused HTML widget.
 
   - An alternative to skipping bindings would be to completely remove the Buddy
     List event handler, but that would cause other issues.  (Control+B for bold
@@ -55,9 +40,10 @@ from most troublesome to least.
 
   - The related functions in Pidgin are all static, so I can't call them from a
     wrapper function.  The code in question could be duplicated, but I am very
-    much against plugins duplicating any part of the main project's code.  It
-    seems the only feasible action is to file an issue in the Pidgin tracker.
+    much against plugins duplicating any part of the main project's code.
 
-* The buddy icon in the Buddy List seems to calculate its position using the
-  width of the notebook and the position of the window.  This causes it to be
-  drawn in odd locations when using the "left" position preference.
+* The buddy icon in the status box is positioned from the left of the window,
+  based on the Buddy List's width.  This causes it to be drawn over the pane of
+  conversations when using the "left" position preference.
+
+  + Pidgin ticket #15046 has a patch to correct this.

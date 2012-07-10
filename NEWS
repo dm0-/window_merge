@@ -3,16 +3,41 @@ code modifications, see the ChangeLog file.  For newly discovered problems with
 the software, see the BUGS file.
 
 
+* Updated Distribution of Window Merge 0.3
+
+** Plugin preferences
+
+*** If the conversation placement preference was set to "Buddy List window" and
+    the plugin was then disabled, it will use the "Last created window" option.
+
+** Buddy List window
+
+*** When the plugin is disabled, the Buddy List and conversation panes are now
+    split into two independent windows (instead of closing and replacing).
+
+*** A label and icon have been added to the placeholder tab.
+
+*** The Buddy List pane should now remain at a fixed size when resizing the
+    window, even when it is the right or bottom pane.  I.e. the conversation
+    pane should always be resized with the window.
+
+*** The notification icon in the menu bar has been reordered to remain right-
+    justified.  This also makes the conversation menu items appear adjacent to
+    the Buddy List items.
+
+*** Message notifications are now cleared when the Buddy List is focused.
+
+
 * Updated Distribution of Window Merge 0.2
 
 ** Buddy List window
 
-*** The window icon list will be unset when conversations are cloesd or the
+*** The window icon list will be unset when conversations are closed or the
     plugin is disabled.  This will cause the window to display the default icon
     of the application, which is what the Buddy List normally displays.
 
-*** Several key events are now properly handled, including message retrieval
-    and conversation menu accelerators.
+*** Several conversation keyboard events are now properly handled, including
+    message retrieval and menu accelerators.
 
 *** When disabling the plugin, conversations open in the Buddy List window will
     be run through conversation placement so they are not lost.
