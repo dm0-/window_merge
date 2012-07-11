@@ -1,12 +1,12 @@
 Name:          pidgin-window_merge
-Version:       0.2
+Version:       0.3
 Release:       1%{?dist}
 Summary:       Merges the Buddy List window with a conversation window
 
 Group:         Applications/Internet
 License:       GPLv3+
 URL:           https://github.com/dm0-/window_merge
-Source0:       https://github.com/downloads/dm0-/window_merge/window_merge-0.2.tar.gz
+Source0:       https://github.com/downloads/dm0-/window_merge/window_merge-0.3.tar.gz
 
 BuildRequires: pidgin-devel
 Requires:      pidgin
@@ -37,6 +37,9 @@ rm -f %{buildroot}%{plugindir}/%{pname}.la
 
 
 %changelog
+* Tue Jul 10 2012 David Michael <fedora.dm0@gmail.com> - 0.3-1
+- Update to a newer release
+
 * Mon Mar 26 2012 David Michael <fedora.dm0@gmail.com> - 0.2-1
 - Update to a newer release
 

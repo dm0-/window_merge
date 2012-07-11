@@ -1,8 +1,8 @@
 #!/usr/bin/makensis
 # Use this in the source directory after the "make" command ends successfully.
 
-Name "Window Merge 0.2"
-OutFile "Install Window Merge 0.2.exe"
+Name "Window Merge 0.3"
+OutFile "Install Window Merge 0.3.exe"
 
 RequestExecutionLevel admin
 SetCompressor /solid lzma
