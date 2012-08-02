@@ -142,6 +142,23 @@ conversation_dragging_cb(PidginWindow *src, PidginWindow *dst)
 
 
 /**
+ * A callback for when a conversation is hidden (moved to a hidden window)
+ *
+ * This simply treats the conversation as if it was deleted, or dragged out of
+ * its parent window.  The dummy conversation's tab needs to be handled in the
+ * same manner for this case.
+ *
+ * @param[in] gtkconv    The conversation that is being hidden
+**/
+static void
+conversation_hiding_cb(PidginConversation *gtkconv)
+{
+  if ( gtkconv != NULL )
+    deleting_conversation_cb(gtkconv->active_conv);
+}
+
+
+/**
  * A callback for when the selected tab changes
  *
  * The important cases caught by this function are when conversations are
@@ -233,6 +250,8 @@ plugin_load(PurplePlugin *plugin)
                         PURPLE_CALLBACK(deleting_conversation_cb), NULL);
   purple_signal_connect(gtkconv_handle, "conversation-dragging", plugin,
                         PURPLE_CALLBACK(conversation_dragging_cb), NULL);
+  purple_signal_connect(gtkconv_handle, "conversation-hiding", plugin,
+                        PURPLE_CALLBACK(conversation_hiding_cb), NULL);
   purple_signal_connect(gtkconv_handle, "conversation-switched", plugin,
                         PURPLE_CALLBACK(conversation_switched_cb), NULL);
 
