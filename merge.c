@@ -162,17 +162,12 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
 {
   PidginWindow *gtkconvwin;     /*< The mutilated conversations for gtkblist */
   GtkBindingSet *binding_set;   /*< The binding set of GtkIMHtml widgets     */
-  GtkMenu *submenu;             /*< A submenu of a conversation menu item    */
-  GtkWidget *blist_menu;        /*< The Buddy List menu bar                  */
-  GList *items;                 /*< List of conversation window menu items   */
-  GList *item;                  /*< A menu item in the list (iteration)      */
 
   /* Sanity check: If the Buddy List is already merged, don't mess with it. */
   if ( pwm_blist_get_convs(gtkblist) != NULL )
     return;
 
   binding_set = gtk_binding_set_by_class(g_type_class_ref(GTK_TYPE_IMHTML));
-  blist_menu = gtk_widget_get_parent(gtkblist->menutray);
   gtkconvwin = pidgin_conv_window_new();
 
   /* Tie the Buddy List and conversation window instances together. */
@@ -186,24 +181,9 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
   /* Move the conversation notebook into the Buddy List window. */
   pwm_create_paned_layout(gtkblist, purple_prefs_get_string(PREF_SIDE));
 
-  /* Migrate conversation menu items into the Buddy List bar. */
-  items = gtk_container_get_children(GTK_CONTAINER(gtkconvwin->menu.menubar));
-  gtk_widget_reparent(gtkblist->menutray, gtkconvwin->menu.menubar);
-  for ( item = items; item != NULL; item = item->next ) {
-    gtk_widget_reparent(GTK_WIDGET(item->data), blist_menu);
-
-    /* Register the submenus' accelerator groups with the Buddy List window. */
-    submenu = GTK_MENU(gtk_menu_item_get_submenu(GTK_MENU_ITEM(item->data)));
-    gtk_window_add_accel_group(GTK_WINDOW(gtkblist->window),
-                               gtk_menu_get_accel_group(submenu));
-  }
-  gtk_widget_reparent(gtkblist->menutray, blist_menu);
-  pwm_store(gtkblist, "conv_menus", items);
-
-  /* Display instructions for users, and hide menu items for real convs. */
+  /* Display the instructions tab for new users. */
   pwm_init_dummy_conversation(gtkblist);
   pwm_show_dummy_conversation(gtkblist);
-  pwm_set_conv_menus_visible(gtkblist, FALSE);
 
   /* Pass focus events from Buddy List to conversation window. */
   g_object_connect(G_OBJECT(gtkblist->window), "signal::focus-in-event",
@@ -238,16 +218,15 @@ void
 pwm_split_conversation(PidginBuddyList *gtkblist)
 {
   PidginWindow *gtkconvwin;     /*< Conversation window merged into gtkblist */
-  GtkMenu *submenu;             /*< A submenu of a conversation menu item    */
   GtkWidget *paned;             /*< The panes on the Buddy List window       */
-  GList *items;                 /*< List of conversation window menu items   */
-  GList *item;                  /*< A menu item in the list (iteration)      */
   gchar *title;                 /*< Original title of the Buddy List window  */
 
   gtkconvwin = pwm_blist_get_convs(gtkblist);
-  items = pwm_fetch(gtkblist, "conv_menus");
   paned = pwm_fetch(gtkblist, "paned");
   title = pwm_fetch(gtkblist, "title");
+
+  /* Ensure the conversation window's menu items are returned. */
+  pwm_set_conv_menus_visible(gtkblist, FALSE);
 
   /* End the association between the Buddy List and its conversation window. */
   g_object_steal_data(G_OBJECT(gtkblist->notebook), "pwm_convs");
@@ -260,19 +239,6 @@ pwm_split_conversation(PidginBuddyList *gtkblist)
   /* Stop passing focus events from Buddy List to conversation window. */
   g_object_disconnect(G_OBJECT(gtkblist->window), "any_signal",
                       G_CALLBACK(focus_in_event_cb), gtkconvwin->window, NULL);
-
-  /* Return the conversation menu items to their original window's menu bar. */
-  for ( item = items; item != NULL; item = item->next ) {
-
-    /* Remove the submenus' accelerator groups from the Buddy List window. */
-    submenu = GTK_MENU(gtk_menu_item_get_submenu(GTK_MENU_ITEM(item->data)));
-    gtk_window_remove_accel_group(GTK_WINDOW(gtkblist->window),
-                                  gtk_menu_get_accel_group(submenu));
-
-    gtk_widget_reparent(GTK_WIDGET(item->data), gtkconvwin->menu.menubar);
-  }
-  g_list_free(items);
-  pwm_clear(gtkblist, "conv_menus");
 
   /* Restore the conversation window's notebook. */
   pwm_widget_replace(pwm_fetch(gtkblist, "placeholder"),
@@ -371,22 +337,95 @@ pwm_create_paned_layout(PidginBuddyList *gtkblist, const char *side)
 /**
  * Toggle the visibility of conversation window menu items
  *
+ * The method of hiding the menu items is to reparent them back into their
+ * original (still hidden) parent window.  This avoids conflicting with other
+ * "hiding" methods used by plugins, such as widget sensitivity or visibility.
+ *
+ * When migrating to the Buddy List, left-justified items are inserted after
+ * the last left-justified item.  Right-justified items are inserted before the
+ * first right-justified item.  This appears to append conversation menu items
+ * while keeping the Buddy List's notification icon on the far right.
+ *
+ * When migrating back to the conversation window, left-justified items are
+ * prepended to all items.  Right-justified items are inserted before the first
+ * right-justified item.  This gives the appearance of appending any newly
+ * added menu items when they are all migrated to the Buddy List again.
+ *
  * @param[in] gtkblist   The Buddy List whose menu needs adjusting
  * @param[in] visible    Whether the menu items are being shown or hidden
 **/
 void
 pwm_set_conv_menus_visible(PidginBuddyList *gtkblist, gboolean visible)
 {
-  GList *items;                 /*< List of conversation window menu items   */
-  GList *item;                  /*< A menu item in the list (iteration)      */
+  PidginWindow *gtkconvwin;     /*< Conversation window merged into gtkblist */
+  GtkMenu *submenu;             /*< A submenu of a conversation menu item    */
+  GtkContainer *from_menu;      /*< Menu bar of the window losing the items  */
+  GtkContainer *to_menu;        /*< Menu bar of the window gaining the items */
+  GtkWidget *blist_menu;        /*< The Buddy List menu bar                  */
+  GtkWidget *convs_menu;        /*< The conversation window menu bar         */
+  GtkWidget *item;              /*< A menu item widget being transferred     */
+  GList *children;              /*< List of menu items in a given window     */
+  GList *child;                 /*< A menu item in the list (iteration)      */
+  GList *migrated_items;        /*< List of items added to the Buddy List    */
+  gint index_left;              /*< Position to insert left-justified items  */
+  gint index_right;             /*< Position to insert right-justified items */
 
-  items = pwm_fetch(gtkblist, "conv_menus");
+  gtkconvwin = pwm_blist_get_convs(gtkblist);
 
+  /* Sanity check: Only act on a merged Buddy List window. */
+  if ( gtkconvwin == NULL )
+    return;
+
+  blist_menu = gtk_widget_get_parent(gtkblist->menutray);
+  convs_menu = gtkconvwin->menu.menubar;
+  from_menu = GTK_CONTAINER(visible ? convs_menu : blist_menu);
+  to_menu   = GTK_CONTAINER(visible ? blist_menu : convs_menu);
+  migrated_items = pwm_fetch(gtkblist, "conv_menus");
+
+  /* Locate the position before the first right-aligned menu item. */
+  index_right = 0;
+  children = gtk_container_get_children(to_menu);
+  for ( child = children; child != NULL; child = child->next )
+    if ( gtk_menu_item_get_right_justified(GTK_MENU_ITEM(child->data)) )
+      break;
+    else
+      index_right++;
+  g_list_free(children);
+  index_left = visible ? index_right : 0;
+
+  /* Loop over each conversation menu item to move it to its destination. */
+  children = visible ? gtk_container_get_children(from_menu) : migrated_items;
+  for ( child = children; child != NULL; child = child->next ) {
+    item = GTK_WIDGET(child->data);
+
+    /* Reparent the item into the window based on existing justified items. */
+    g_object_ref_sink(G_OBJECT(item));
+    gtk_container_remove(from_menu, item);
+    if ( gtk_menu_item_get_right_justified(GTK_MENU_ITEM(item)) )
+      gtk_menu_shell_insert(GTK_MENU_SHELL(to_menu), item, index_right);
+    else
+      gtk_menu_shell_insert(GTK_MENU_SHELL(to_menu), item, index_left++);
+    g_object_unref(G_OBJECT(item));
+    index_right++;
+
+    /* Register/Unregister its accelerator group with the Buddy List window. */
+    submenu = GTK_MENU(gtk_menu_item_get_submenu(GTK_MENU_ITEM(item)));
+    if ( visible )
+      gtk_window_add_accel_group(GTK_WINDOW(gtkblist->window),
+                                 gtk_menu_get_accel_group(submenu));
+    else
+      gtk_window_remove_accel_group(GTK_WINDOW(gtkblist->window),
+                                    gtk_menu_get_accel_group(submenu));
+
+    /* Add this menu item to the list for later restoration, if necessary. */
+    if ( visible )
+      migrated_items = g_list_append(migrated_items, child->data);
+  }
+  g_list_free(children);
+
+  /* Update the stored pointer to the list of migrated items. */
   if ( visible )
-    for ( item = items; item != NULL; item = item->next )
-      gtk_widget_show(GTK_WIDGET(item->data));
-
+    pwm_store(gtkblist, "conv_menus", migrated_items);
   else
-    for ( item = items; item != NULL; item = item->next )
-      gtk_widget_hide(GTK_WIDGET(item->data));
+    pwm_clear(gtkblist, "conv_menus");
 }
