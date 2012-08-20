@@ -382,6 +382,12 @@ pwm_set_conv_menus_visible(PidginBuddyList *gtkblist, gboolean visible)
   to_menu   = GTK_CONTAINER(visible ? blist_menu : convs_menu);
   migrated_items = pwm_fetch(gtkblist, "conv_menus");
 
+  /* XXX: Drop the "Send To" menu to avoid segfaults. */
+  if ( visible && gtkconvwin->menu.send_to != NULL ) {
+    gtk_widget_destroy(gtkconvwin->menu.send_to);
+    gtkconvwin->menu.send_to = NULL;
+  }
+
   /* Locate the position before the first right-aligned menu item. */
   index_right = 0;
   children = gtk_container_get_children(to_menu);
