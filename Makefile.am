@@ -17,7 +17,7 @@
 
 ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = BUGS Doxyfile
-SUBDIRS = po
+#SUBDIRS = po
 
 plugin_LTLIBRARIES = window_merge.la
 
