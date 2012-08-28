@@ -1,0 +1,6 @@
+plugin.h
+window_merge.h
+dummy.c
+merge.c
+plugin.c
+utils.c

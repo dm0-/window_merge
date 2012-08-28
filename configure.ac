@@ -21,9 +21,12 @@ AC_INIT([Window Merge],[0.3],
 AM_INIT_AUTOMAKE([dist-xz])
 LT_INIT([disable-static win32-dll])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile po/Makefile.in])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.18])
 
 AS_CASE(["$host_os"],
     [*mingw*],[AS_VAR_SET([LT_NO_UNDEFINED],[-no-undefined])],

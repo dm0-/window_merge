@@ -15,15 +15,9 @@
 # You should have received a copy of the GNU General Public License along with
 # Window Merge.  If not, see <http://www.gnu.org/licenses/>.
 
-ACLOCAL_AMFLAGS = -I m4
-EXTRA_DIST = BUGS Doxyfile
-SUBDIRS = po
+subdir = po
+top_builddir = ..
 
-plugin_LTLIBRARIES = window_merge.la
-
-window_merge_la_CFLAGS  = $(pidgin_CFLAGS)
-window_merge_la_LDFLAGS = -avoid-version -export-dynamic -module -shared \
-                          $(LT_NO_UNDEFINED) \
-                          $(pidgin_LIBS)
-window_merge_la_SOURCES = dummy.c merge.c plugin.c utils.c \
-                          plugin.h window_merge.h
+COPYRIGHT_HOLDER = David Michael <fedora.dm0@gmail.com>
+DOMAIN = pidgin-$(PACKAGE)
+XGETTEXT_OPTIONS = --keyword=_ --keyword=N_ --no-location
