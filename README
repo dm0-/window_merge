@@ -61,9 +61,10 @@ simply running the command "doxygen" in the source directory.
 SIMPLE BUILD INSTRUCTIONS
 
 If the Pidgin development files are properly installed (prebuilt packages are
-probably named "pidgin-devel" or "pidgin-dev"), only two commands should be
+probably named "pidgin-devel" or "pidgin-dev"), only these commands should be
 necessary to build the plugin (run from this file's source directory):
 
+    autoreconf -fi # only if using cloned source instead of distribution tar
     ./configure
     make
 
