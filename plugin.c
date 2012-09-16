@@ -66,23 +66,26 @@ pref_convs_side_cb(U const char *name, U PurplePrefType type,
 static void
 conversation_created_cb(PurpleConversation *conv)
 {
+  PidginConversation *gtkconv;  /*< The new Pidgin conversation              */
   PidginBuddyList *gtkblist;    /*< The Buddy List associated with conv      */
   PidginWindow *gtkconvwin;     /*< The conversation window that owns conv   */
 
   if ( conv == NULL )
     return;
 
-  gtkconvwin = pidgin_conv_get_window(PIDGIN_CONVERSATION(conv));
+  gtkconv = PIDGIN_CONVERSATION(conv);
+  gtkconvwin = pidgin_conv_get_window(gtkconv);
   gtkblist = pwm_convs_get_blist(gtkconvwin);
 
   /* Sanity check: This callback should only continue for merged windows. */
   if ( gtkblist == NULL )
     return;
 
-  /* If it there is a tab in addition to the instructions tab, remove it. */
+  /* If there is a tab in addition to the instructions tab, remove it. */
   if ( pidgin_conv_window_get_gtkconv_count(gtkconvwin) > 1 ) {
     pwm_hide_dummy_conversation(gtkblist);
     pwm_set_conv_menus_visible(gtkblist, TRUE);
+    gtk_widget_grab_focus(gtkconv->entry);
   }
 }
 
