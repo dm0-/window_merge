@@ -85,6 +85,10 @@ conversation_created_cb(PurpleConversation *conv)
   if ( pidgin_conv_window_get_gtkconv_count(gtkconvwin) > 1 ) {
     pwm_hide_dummy_conversation(gtkblist);
     pwm_set_conv_menus_visible(gtkblist, TRUE);
+
+    /* Process queued focus events, and focus the conversation entry field. */
+    while ( gtk_events_pending() )
+      gtk_main_iteration();
     gtk_widget_grab_focus(gtkconv->entry);
   }
 }
