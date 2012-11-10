@@ -202,6 +202,9 @@ pwm_merge_conversation(PidginBuddyList *gtkblist)
   gtk_binding_entry_skip(binding_set, GDK_Page_Down,    GDK_CONTROL_MASK);
   gtk_binding_entry_skip(binding_set, GDK_KP_Page_Up,   GDK_CONTROL_MASK);
   gtk_binding_entry_skip(binding_set, GDK_KP_Page_Down, GDK_CONTROL_MASK);
+  gtk_binding_entry_skip(binding_set, GDK_Tab,          GDK_CONTROL_MASK);
+  gtk_binding_entry_skip(binding_set, GDK_KP_Tab,       GDK_CONTROL_MASK);
+  gtk_binding_entry_skip(binding_set, GDK_ISO_Left_Tab, GDK_CONTROL_MASK);
 }
 
 
