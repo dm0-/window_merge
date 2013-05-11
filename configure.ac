@@ -39,6 +39,10 @@ PKG_CHECK_EXISTS([gobject-2.0 >= 2.30],,
 
 PKG_CHECK_MODULES([pidgin],[pidgin],,
     [AC_MSG_WARN([[relying on environment pidgin_CFLAGS and pidgin_LIBS]])])
-AC_SUBST([plugindir],['${libdir}/pidgin'])
+
+m4_ifndef([PKG_CHECK_VAR],[m4_define([PKG_CHECK_VAR],[$5])])
+PKG_CHECK_VAR([pidgin_plugindir],[pidgin],[plugindir],,
+    [AS_VAR_SET([pidgin_plugindir],['${libdir}/pidgin'])])
+AC_SUBST([plugindir],[$pidgin_plugindir])
 
 AC_OUTPUT
