@@ -33,6 +33,10 @@ AS_CASE(["$host_os"],
     [AS_VAR_SET([LT_NO_UNDEFINED])])
 AC_SUBST([LT_NO_UNDEFINED])
 
+PKG_CHECK_EXISTS([gobject-2.0 >= 2.30],,
+    [AC_DEFINE([G_VALUE_INIT],[{ 0, { { 0 } } }],
+        [Compatibility for old systems missing this definition in gvalue.h])])
+
 PKG_CHECK_MODULES([pidgin],[pidgin],,
     [AC_MSG_WARN([[relying on environment pidgin_CFLAGS and pidgin_LIBS]])])
 AC_SUBST([plugindir],['${libdir}/pidgin'])

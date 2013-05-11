@@ -21,6 +21,7 @@
  * Window Merge.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
+#include "plugin.h"
 #include <gtkblist.h>
 #include <gtkconv.h>
 
