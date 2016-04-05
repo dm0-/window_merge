@@ -32,6 +32,7 @@ following tools to be installed and available on your system:
 * [automake](http://www.gnu.org/software/automake/)
 * [libtool](http://www.gnu.org/software/libtool/)
 * [gettext](http://www.gnu.org/software/gettext/)
+* pidgin-dev
 
 On a command line of any given operating system, running the following should
 create a copy of the project's git repository and change to its directory.
