@@ -1,0 +1,12 @@
+# exclude debian building logs
+files
+debhelper-build-stamp
+pidgin-plugin-window-merge
+*.log
+*.substvars
+# dummy deb package with build dependencies (mk-build-deps ./control)
+*.deb
+
+# Dolphin file manager creates the file .directory to save some folder-specific settings
+*.directory
+

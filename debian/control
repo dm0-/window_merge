@@ -1,0 +1,13 @@
+Source: pidgin-plugin-window-merge
+Section: net
+Priority: optional
+Maintainer: Mikhail Novosyolov <mikhailnov@dumalogiya.ru>
+Build-Depends: debhelper (>=9), pidgin-dev, dh-autoreconf
+Standards-Version: 3.9.6
+Homepage: https://github.com/dm0-/window_merge/
+
+Package: pidgin-plugin-window-merge
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, pidgin
+Description: Pidgin plugin for merging windows
+ A Pidgin plugin that merges the Buddy List window with a conversation window
